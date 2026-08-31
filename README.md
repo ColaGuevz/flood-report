@@ -1,36 +1,321 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🌧️ FloodWatch
 
-## Getting Started
+A community-driven flood reporting web application that allows users to report flooding in real time, upload photo evidence, and help others stay informed about flood conditions in their area.
 
-First, run the development server:
+FloodWatch is built as a full-stack web application using **Next.js**, **TypeScript**, and **Supabase**.
+
+---
+
+## 📸 Preview
+
+> *(Add screenshots here later.)*
+
+---
+
+## ✨ Features
+
+### Authentication
+
+- ✅ Google Sign-In using Supabase Authentication
+- ✅ Protected routes
+- ✅ Persistent login sessions
+- ✅ Secure logout
+
+### User Profiles
+
+- ✅ Profile setup after first login
+- ✅ Username
+- ✅ Display name
+- ✅ Google profile avatar
+- ✅ Personal profile page
+- ✅ View your own flood reports
+
+### Flood Reports
+
+- ✅ Create flood reports
+- ✅ Upload flood photos
+- ✅ Location field
+- ✅ Description field
+- ✅ Automatic timestamp
+- ✅ Reports displayed newest first
+
+### Flood Severity
+
+- 🟢 Minor
+- 🟡 Moderate
+- 🟠 Severe
+- 🔴 Critical / Impassable
+
+### Flood Status
+
+- 🔴 Active
+- 🟢 Resolved
+- Toggle between Active and Resolved
+- Default status is Active
+
+### Feed
+
+- ✅ Community feed
+- ✅ Profile information on every post
+- ✅ Relative timestamps
+- ✅ Recent report indicator
+- ✅ Severity badges
+- ✅ Status badges
+
+### Search & Filtering
+
+- 🔍 Location search
+- Filter by:
+  - Severity
+  - Status
+- Combined search + filtering
+- Clear filters
+- Empty-state handling
+
+### Report Management
+
+- ✏️ Edit your own reports
+- 🗑️ Delete your own reports
+- Ownership enforced through Supabase Row Level Security
+
+### Community Confirmation
+
+- 👍 Confirm "Still Flooding"
+- Toggle confirmation on/off
+- Confirmation count displayed
+- One confirmation per user per report
+- Confirmations disabled for resolved reports
+
+---
+
+## 🛠️ Tech Stack
+
+| Technology | Purpose |
+|------------|---------|
+| Next.js | Frontend & App Router |
+| React | UI |
+| TypeScript | Type safety |
+| Tailwind CSS | Styling |
+| Supabase | Backend |
+| PostgreSQL | Database |
+| Supabase Auth | Google Authentication |
+| Supabase Storage | Flood image storage |
+
+---
+
+## 📂 Project Structure
+
+```text
+floodwatch/
+├── app/
+│   ├── login/
+│   ├── profile/
+│   ├── report/
+│   ├── auth/
+│   └── ...
+├── lib/
+│   └── supabase/
+├── public/
+├── tests/
+└── ...
+```
+
+---
+
+## 🗄️ Database
+
+### Profiles
+
+| Field | Type |
+|--------|------|
+| id | UUID |
+| username | Text |
+| display_name | Text |
+| avatar_url | Text |
+| created_at | Timestamp |
+
+### Posts
+
+| Field | Type |
+|--------|------|
+| id | Integer |
+| user_id | UUID |
+| location | Text |
+| description | Text |
+| image_url | Text |
+| severity | Enum |
+| status | Enum |
+| created_at | Timestamp |
+
+### Report Confirmations
+
+| Field | Type |
+|--------|------|
+| id | Integer |
+| report_id | FK |
+| user_id | FK |
+| created_at | Timestamp |
+
+---
+
+## 🔒 Security
+
+FloodWatch uses Supabase Row Level Security (RLS).
+
+Implemented security includes:
+
+- Users can only edit their own reports.
+- Users can only delete their own reports.
+- Users can only update their own report status.
+- Users can only create/delete their own confirmations.
+- Invalid severity values are rejected.
+- Invalid status values are rejected.
+
+---
+
+## 🚀 Getting Started
+
+### Requirements
+
+- Node.js 22+
+- npm
+- Supabase account
+- Google Cloud OAuth credentials
+
+### Installation
+
+```bash
+git clone https://github.com/yourusername/floodwatch.git
+
+cd floodwatch
+
+npm install
+
+npm run dev
+```
+
+Create a `.env.local` file.
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=your_project_url
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=your_publishable_key
+```
+
+Run:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```text
+http://localhost:3000
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## 🧪 Testing
 
-To learn more about Next.js, take a look at the following resources:
+FloodWatch includes automated tests.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Available commands:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+npm run test
+npm run test:unit
+npm run test:e2e
+npm run test:coverage
+```
 
-## Deploy on Vercel
+> **Note:** During feature development, automated tests are not run automatically after every change. Run the test suite only when performing a dedicated testing pass or before major commits/releases.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 📌 Current Workflow
+
+```text
+User
+ │
+ ▼
+Google Login
+ │
+ ▼
+Profile Setup
+ │
+ ▼
+Home Feed
+ │
+ ├── Create Flood Report
+ │      ├── Location
+ │      ├── Description
+ │      ├── Photo
+ │      └── Severity
+ │
+ ▼
+Community Feed
+ │
+ ├── Search
+ ├── Filters
+ ├── Confirm Report
+ ├── Edit Own Report
+ └── Delete Own Report
+```
+
+---
+
+## 🛣️ Roadmap
+
+### Completed
+
+- [x] Google Authentication
+- [x] User Profiles
+- [x] Flood Reports
+- [x] Image Upload
+- [x] Feed
+- [x] Edit/Delete Reports
+- [x] Severity
+- [x] Active/Resolved Status
+- [x] Search
+- [x] Filters
+- [x] Community Confirmation
+
+### Planned
+
+- [ ] Report sharing
+- [ ] Public user profiles
+- [ ] Report verification
+- [ ] Map visualization
+- [ ] Nearby reports
+- [ ] Notifications
+- [ ] Historical analytics dashboard
+- [ ] Admin moderation
+
+---
+
+## 💡 Design Philosophy
+
+FloodWatch is designed as a **community-first flood information platform**, not a general social network.
+
+The application prioritizes:
+
+- Accurate community reporting
+- Photo-based evidence
+- Clear flood severity
+- Real-time updates
+- Simple and intuitive user experience
+
+---
+
+## 👨‍💻 Author
+
+Developed by **Winston Tabada** as a full-stack portfolio project demonstrating:
+
+- Next.js
+- TypeScript
+- Supabase
+- Authentication
+- PostgreSQL
+- File uploads
+- Row Level Security
+- Modern web application architecture
