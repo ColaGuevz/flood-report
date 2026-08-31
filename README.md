@@ -197,8 +197,8 @@ npm run dev
 Create a `.env.local` file.
 
 ```env
-NEXT_PUBLIC_SUPABASE_URL=your_project_url
-NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=your_publishable_key
+NEXT_PUBLIC_SUPABASE_URL=https://biwqbmiitnqyztezovfz.supabase.co
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_6qMjA445zmN8tSKRnTZzeQ_hvFmqQP5
 ```
 
 Run:
