@@ -112,13 +112,13 @@ export default function NewReport() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 py-10 px-4 sm:px-6 flex flex-col justify-center">
+    <div className="min-h-screen bg-slate-50 dark:bg-[#0b1120] py-10 px-4 sm:px-6 flex flex-col justify-center transition-colors duration-200">
       <div className="max-w-xl mx-auto w-full">
         {/* Back Link */}
         <div className="mb-6">
           <Link
             href="/"
-            className="inline-flex items-center gap-2 text-xs font-semibold text-slate-500 hover:text-slate-900 transition-colors"
+            className="inline-flex items-center gap-2 text-xs font-bold text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -139,16 +139,16 @@ export default function NewReport() {
         </div>
 
         {/* Card */}
-        <div className="bg-white rounded-3xl border border-slate-200/90 shadow-xl shadow-slate-200/50 p-6 sm:p-10">
-          <div className="flex items-center gap-3.5 pb-6 border-b border-slate-100">
-            <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-2xl shadow-inner">
+        <div className="bg-white dark:bg-slate-900/90 rounded-3xl border border-slate-200/90 dark:border-slate-800 shadow-2xl shadow-slate-200/50 dark:shadow-black/50 p-6 sm:p-10 transition-colors duration-200">
+          <div className="flex items-center gap-3.5 pb-6 border-b border-slate-100 dark:border-slate-800">
+            <div className="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center text-2xl shadow-inner">
               🌊
             </div>
             <div>
-              <h1 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
+              <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
                 Create Flood Report
               </h1>
-              <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
+              <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5 font-medium">
                 Share accurate conditions to keep your community safe.
               </p>
             </div>
@@ -157,11 +157,11 @@ export default function NewReport() {
           <form onSubmit={handleSubmit} className="mt-6 space-y-6">
             {/* Location */}
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
                 Location / Barangay / City <span className="text-rose-500">*</span>
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 dark:text-slate-500">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="w-4 h-4"
@@ -188,14 +188,14 @@ export default function NewReport() {
                   onChange={(e) => setLocation(e.target.value)}
                   placeholder="e.g. Brgy. San Jose, Malolos, Bulacan"
                   required
-                  className="w-full rounded-xl border border-slate-300 pl-10 pr-4 py-3 text-sm text-slate-900 bg-white placeholder-slate-400 outline-none transition focus:border-blue-600 focus:ring-4 focus:ring-blue-500/10 shadow-xs"
+                  className="w-full rounded-2xl border border-slate-300 dark:border-slate-700 pl-10 pr-4 py-3 text-sm text-slate-900 dark:text-white bg-white dark:bg-slate-800 placeholder-slate-400 dark:placeholder-slate-500 outline-none transition focus:border-blue-600 dark:focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 shadow-2xs"
                 />
               </div>
             </div>
 
             {/* Description */}
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
                 What's happening? <span className="text-rose-500">*</span>
               </label>
               <textarea
@@ -204,16 +204,16 @@ export default function NewReport() {
                 placeholder="Describe current water level (ankle, knee, waist deep), impassable roads, or assistance needed..."
                 rows={4}
                 required
-                className="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm text-slate-900 bg-white placeholder-slate-400 outline-none transition focus:border-blue-600 focus:ring-4 focus:ring-blue-500/10 resize-none shadow-xs leading-relaxed"
+                className="w-full rounded-2xl border border-slate-300 dark:border-slate-700 px-4 py-3 text-sm text-slate-900 dark:text-white bg-white dark:bg-slate-800 placeholder-slate-400 dark:placeholder-slate-500 outline-none transition focus:border-blue-600 dark:focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 resize-none shadow-2xs leading-relaxed"
               />
             </div>
 
             {/* Flood Severity */}
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-3">
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-3">
                 Flood Severity <span className="text-rose-500">*</span>
               </label>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 {([
                   { value: "minor", label: "Minor" },
                   { value: "moderate", label: "Moderate" },
@@ -225,10 +225,10 @@ export default function NewReport() {
                   return (
                     <label
                       key={value}
-                      className={`flex items-center gap-3 px-4 py-3 rounded-xl border-2 cursor-pointer transition-all duration-100 select-none ${
+                      className={`flex items-center gap-3 px-4 py-3 rounded-2xl border-2 cursor-pointer transition-all duration-100 select-none ${
                         isSelected
-                          ? `${config.bg} ${config.border} ${config.text}`
-                          : "bg-white border-slate-200 text-slate-700 hover:border-slate-300 hover:bg-slate-50"
+                          ? `${config.bg} ${config.border} ${config.text} shadow-xs`
+                          : "bg-white dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:border-slate-300 dark:hover:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-750"
                       }`}
                     >
                       <input
@@ -240,7 +240,7 @@ export default function NewReport() {
                         className="sr-only"
                       />
                       <span className="text-base leading-none">{config.emoji}</span>
-                      <span className="text-sm font-semibold">{label}</span>
+                      <span className="text-sm font-bold">{label}</span>
                       {isSelected && (
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -261,14 +261,14 @@ export default function NewReport() {
 
             {/* Image Upload with Live Preview */}
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
                 Flood Photo <span className="text-rose-500">*</span>
               </label>
 
               {!previewUrl ? (
                 <div
                   onClick={() => fileInputRef.current?.click()}
-                  className="border-2 border-dashed border-slate-300 hover:border-blue-500 bg-slate-50/60 hover:bg-blue-50/30 rounded-2xl p-6 text-center cursor-pointer transition-all duration-150 group"
+                  className="border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-blue-500 dark:hover:border-blue-400 bg-slate-50/60 dark:bg-slate-800/40 hover:bg-blue-50/30 dark:hover:bg-blue-950/20 rounded-2xl p-6 text-center cursor-pointer transition-all duration-150 group"
                 >
                   <input
                     ref={fileInputRef}
@@ -278,7 +278,7 @@ export default function NewReport() {
                     required
                     className="hidden"
                   />
-                  <div className="w-12 h-12 rounded-full bg-white shadow-xs border border-slate-200 text-blue-600 flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
+                  <div className="w-12 h-12 rounded-2xl bg-white dark:bg-slate-800 shadow-xs border border-slate-200 dark:border-slate-700 text-blue-600 dark:text-blue-400 flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       className="w-6 h-6"
@@ -294,15 +294,15 @@ export default function NewReport() {
                       />
                     </svg>
                   </div>
-                  <p className="text-sm font-semibold text-slate-800">
+                  <p className="text-sm font-bold text-slate-800 dark:text-slate-200">
                     Click to upload photo
                   </p>
-                  <p className="text-xs text-slate-400 mt-1">
+                  <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">
                     PNG, JPG, WEBP up to 10MB
                   </p>
                 </div>
               ) : (
-                <div className="relative rounded-2xl overflow-hidden border border-slate-200 shadow-sm bg-slate-900 group">
+                <div className="relative rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 shadow-sm bg-slate-900 group">
                   <img
                     src={previewUrl}
                     alt="Flood preview"
@@ -312,7 +312,7 @@ export default function NewReport() {
                     <button
                       type="button"
                       onClick={handleRemoveImage}
-                      className="px-3 py-1.5 rounded-lg bg-red-600/90 hover:bg-red-600 text-white text-xs font-semibold backdrop-blur-sm shadow-md transition-colors cursor-pointer flex items-center gap-1.5"
+                      className="px-3 py-1.5 rounded-xl bg-red-600/90 hover:bg-red-600 text-white text-xs font-semibold backdrop-blur-sm shadow-md transition-colors cursor-pointer flex items-center gap-1.5"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -337,7 +337,7 @@ export default function NewReport() {
 
             {/* Error Message */}
             {error && (
-              <div className="bg-rose-50 border border-rose-200 text-rose-700 rounded-xl p-4 text-xs font-medium flex items-center gap-2.5">
+              <div className="bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-800/60 text-rose-700 dark:text-rose-300 rounded-2xl p-4 text-xs font-semibold flex items-center gap-2.5">
                 <span>⚠️</span>
                 <span>{error}</span>
               </div>
@@ -347,14 +347,14 @@ export default function NewReport() {
             <div className="pt-2 flex items-center gap-3">
               <Link
                 href="/"
-                className="flex-1 py-3 text-center text-xs font-bold uppercase tracking-wider text-slate-600 hover:text-slate-800 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors"
+                className="flex-1 py-3 text-center text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 hover:text-slate-800 dark:hover:text-white bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-2xl transition-colors"
               >
                 Cancel
               </Link>
               <button
                 type="submit"
                 disabled={loading}
-                className="flex-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl shadow-md shadow-blue-600/25 hover:shadow-lg transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer text-sm"
+                className="flex-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-500 text-white font-bold py-3.5 px-6 rounded-2xl shadow-md shadow-blue-600/25 hover:shadow-lg transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer text-sm"
               >
                 {loading ? (
                   <>

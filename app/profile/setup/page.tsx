@@ -53,26 +53,26 @@ export default function ProfileSetup() {
   };
 
   return (
-    <main className="min-h-screen bg-slate-50 flex items-center justify-center px-4 sm:px-6 py-12">
+    <main className="min-h-screen bg-slate-50 dark:bg-[#0b1120] flex items-center justify-center px-4 sm:px-6 py-12 transition-colors duration-200">
       <div className="w-full max-w-md">
-        <div className="bg-white rounded-3xl border border-slate-200/90 shadow-xl shadow-slate-200/50 p-8 sm:p-10">
+        <div className="bg-white dark:bg-slate-900/90 rounded-3xl border border-slate-200/90 dark:border-slate-800 shadow-2xl shadow-slate-200/50 dark:shadow-black/60 p-8 sm:p-10 transition-colors duration-200">
           <div className="text-center">
-            <div className="w-14 h-14 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-3xl mx-auto shadow-inner mb-4">
+            <div className="w-14 h-14 rounded-2xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center text-3xl mx-auto shadow-inner mb-4">
               👤
             </div>
 
-            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
+            <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
               Complete Your Profile
             </h1>
 
-            <p className="mt-2 text-xs sm:text-sm text-slate-500">
+            <p className="mt-2 text-xs sm:text-sm text-slate-500 dark:text-slate-400">
               Set up your public identity before posting or viewing community flood updates.
             </p>
           </div>
 
           <form onSubmit={handleSubmit} className="mt-8 space-y-5">
             <div>
-              <label htmlFor="displayName" className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
+              <label htmlFor="displayName" className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
                 Display Name <span className="text-rose-500">*</span>
               </label>
 
@@ -83,17 +83,17 @@ export default function ProfileSetup() {
                 onChange={(e) => setDisplayName(e.target.value)}
                 placeholder="e.g. Juan dela Cruz"
                 required
-                className="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm text-slate-900 bg-white placeholder-slate-400 outline-none transition focus:border-blue-600 focus:ring-4 focus:ring-blue-500/10 shadow-xs"
+                className="w-full rounded-2xl border border-slate-300 dark:border-slate-700 px-4 py-3 text-sm text-slate-900 dark:text-white bg-white dark:bg-slate-800 placeholder-slate-400 dark:placeholder-slate-500 outline-none transition focus:border-blue-600 dark:focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 shadow-2xs"
               />
             </div>
 
             <div>
-              <label htmlFor="username" className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
+              <label htmlFor="username" className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
                 Username <span className="text-rose-500">*</span>
               </label>
 
               <div className="relative">
-                <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 text-sm font-semibold">
+                <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 dark:text-slate-500 text-sm font-semibold">
                   @
                 </span>
                 <input
@@ -105,17 +105,17 @@ export default function ProfileSetup() {
                   }
                   placeholder="juandelacruz"
                   required
-                  className="w-full rounded-xl border border-slate-300 pl-8 pr-4 py-3 text-sm text-slate-900 bg-white placeholder-slate-400 outline-none transition focus:border-blue-600 focus:ring-4 focus:ring-blue-500/10 shadow-xs"
+                  className="w-full rounded-2xl border border-slate-300 dark:border-slate-700 pl-8 pr-4 py-3 text-sm text-slate-900 dark:text-white bg-white dark:bg-slate-800 placeholder-slate-400 dark:placeholder-slate-500 outline-none transition focus:border-blue-600 dark:focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 shadow-2xs"
                 />
               </div>
 
-              <p className="mt-1.5 text-[11px] text-slate-400">
+              <p className="mt-1.5 text-[11px] text-slate-400 dark:text-slate-400">
                 Letters, numbers, and underscores only.
               </p>
             </div>
 
             {error && (
-              <div className="bg-rose-50 border border-rose-200 text-rose-700 rounded-xl p-3.5 text-xs font-medium flex items-center gap-2">
+              <div className="bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-800/60 text-rose-700 dark:text-rose-300 rounded-2xl p-3.5 text-xs font-medium flex items-center gap-2">
                 <span>⚠️</span>
                 <span>{error}</span>
               </div>
@@ -124,7 +124,7 @@ export default function ProfileSetup() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full mt-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 px-4 rounded-xl shadow-md shadow-blue-600/25 hover:shadow-lg transition-all duration-150 disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer text-sm"
+              className="w-full mt-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-500 text-white font-bold py-3.5 px-4 rounded-2xl shadow-md shadow-blue-600/25 hover:shadow-lg transition-all duration-150 disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer text-sm"
             >
               {loading ? (
                 <>

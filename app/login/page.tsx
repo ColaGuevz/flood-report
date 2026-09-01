@@ -24,47 +24,47 @@ export default function Login() {
   };
 
   return (
-    <main className="min-h-screen bg-slate-900 relative flex items-center justify-center px-4 sm:px-6 overflow-hidden">
+    <main className="min-h-screen bg-slate-900 dark:bg-[#070b14] relative flex items-center justify-center px-4 sm:px-6 overflow-hidden transition-colors duration-200">
       {/* Ambient background glows */}
-      <div className="absolute top-1/4 -left-20 w-96 h-96 bg-blue-600/20 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-indigo-600/20 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-1/4 -left-20 w-96 h-96 bg-blue-600/25 dark:bg-blue-600/15 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-indigo-600/25 dark:bg-cyan-600/15 rounded-full blur-3xl pointer-events-none" />
 
       <div className="w-full max-w-md relative z-10">
-        <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl shadow-black/40 p-8 sm:p-10 border border-white/20 text-center">
+        <div className="bg-white/95 dark:bg-slate-900/90 backdrop-blur-2xl rounded-3xl shadow-2xl shadow-black/50 p-8 sm:p-10 border border-white/20 dark:border-slate-800 text-center transition-colors duration-200">
           {/* Logo Badge */}
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-600 via-blue-500 to-cyan-500 text-3xl flex items-center justify-center mx-auto shadow-lg shadow-blue-500/25 mb-5">
+          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-600 via-blue-500 to-cyan-400 text-3xl flex items-center justify-center mx-auto shadow-lg shadow-blue-500/25 mb-5">
             🌧️
           </div>
 
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-blue-50 text-blue-700 border border-blue-200 mb-3">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800/60 mb-3 shadow-2xs">
             <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></span>
             Community Safety Network
           </div>
 
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
             FloodWatch
           </h1>
 
-          <p className="mt-2.5 text-sm text-slate-600 leading-relaxed">
+          <p className="mt-2.5 text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
             Real-time flood alerts, crowdsourced road conditions, and community safety updates.
           </p>
 
           {/* Feature Highlights */}
-          <div className="mt-6 pt-6 border-t border-slate-100 space-y-2.5 text-left text-xs text-slate-600">
+          <div className="mt-6 pt-6 border-t border-slate-100 dark:border-slate-800 space-y-2.5 text-left text-xs text-slate-600 dark:text-slate-300">
             <div className="flex items-center gap-2.5">
-              <span className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-[10px] shrink-0">
+              <span className="w-5 h-5 rounded-full bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-400 flex items-center justify-center font-bold text-[10px] shrink-0 border border-emerald-200 dark:border-emerald-800/50">
                 ✓
               </span>
               <span>Live community-reported flood levels</span>
             </div>
             <div className="flex items-center gap-2.5">
-              <span className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-[10px] shrink-0">
+              <span className="w-5 h-5 rounded-full bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-400 flex items-center justify-center font-bold text-[10px] shrink-0 border border-emerald-200 dark:border-emerald-800/50">
                 ✓
               </span>
               <span>Exact locations and verified photos</span>
             </div>
             <div className="flex items-center gap-2.5">
-              <span className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-[10px] shrink-0">
+              <span className="w-5 h-5 rounded-full bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-400 flex items-center justify-center font-bold text-[10px] shrink-0 border border-emerald-200 dark:border-emerald-800/50">
                 ✓
               </span>
               <span>Help your neighbors stay safe & informed</span>
@@ -75,11 +75,11 @@ export default function Login() {
           <button
             onClick={handleGoogleLogin}
             disabled={loading}
-            className="w-full mt-8 bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 hover:text-slate-900 font-semibold py-3.5 px-4 rounded-xl shadow-xs hover:shadow-md hover:border-slate-400 transition-all duration-150 flex items-center justify-center gap-3 cursor-pointer group disabled:opacity-50"
+            className="w-full mt-8 bg-white hover:bg-slate-50 dark:bg-slate-800 dark:hover:bg-slate-750 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-100 font-bold py-3.5 px-4 rounded-2xl shadow-xs hover:shadow-md hover:border-slate-400 dark:hover:border-slate-600 transition-all duration-150 flex items-center justify-center gap-3 cursor-pointer group disabled:opacity-50"
           >
             {loading ? (
               <div className="flex items-center gap-2">
-                <div className="w-4 h-4 border-2 border-slate-600 border-t-transparent rounded-full animate-spin"></div>
+                <div className="w-4 h-4 border-2 border-slate-600 dark:border-slate-300 border-t-transparent rounded-full animate-spin"></div>
                 <span>Connecting...</span>
               </div>
             ) : (
@@ -107,7 +107,7 @@ export default function Login() {
             )}
           </button>
 
-          <p className="mt-6 text-[11px] text-slate-400">
+          <p className="mt-6 text-[11px] text-slate-400 dark:text-slate-400 font-medium">
             By signing in, you agree to submit helpful and accurate flood reports.
           </p>
         </div>

@@ -110,11 +110,11 @@ export default function FeedList({ posts, currentUserId }: FeedListProps) {
 
   return (
     <div className="space-y-6">
-      {/* Search and Filter Controls */}
-      <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-4 sm:p-5 space-y-4">
+      {/* Search and Filter Controls Card */}
+      <div className="bg-white dark:bg-slate-900/90 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-sm p-4 sm:p-6 space-y-4 backdrop-blur-xs transition-colors duration-200">
         {/* Search Bar */}
         <div className="relative">
-          <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+          <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 dark:text-slate-500">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="w-4 h-4"
@@ -134,14 +134,14 @@ export default function FeedList({ posts, currentUserId }: FeedListProps) {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search location (e.g. Malolos, Bulacan)..."
-            className="w-full rounded-xl border border-slate-200 pl-10 pr-9 py-2.5 text-sm text-slate-900 bg-slate-50/70 placeholder-slate-400 outline-none transition focus:bg-white focus:border-blue-600 focus:ring-4 focus:ring-blue-500/10"
+            placeholder="Search municipality or barangay (e.g. Malolos, Bulacan)..."
+            className="w-full rounded-2xl border border-slate-200 dark:border-slate-700/80 pl-10 pr-9 py-3 text-sm text-slate-900 dark:text-white bg-slate-50/80 dark:bg-slate-800/60 placeholder-slate-400 dark:placeholder-slate-500 outline-none transition focus:bg-white dark:focus:bg-slate-800 focus:border-blue-600 dark:focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 shadow-2xs"
           />
           {searchQuery && (
             <button
               type="button"
               onClick={() => setSearchQuery("")}
-              className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 cursor-pointer"
+              className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 cursor-pointer"
               title="Clear search"
             >
               <svg
@@ -163,10 +163,10 @@ export default function FeedList({ posts, currentUserId }: FeedListProps) {
         </div>
 
         {/* Filter Rows */}
-        <div className="space-y-3 pt-1 border-t border-slate-100">
+        <div className="space-y-3 pt-2 border-t border-slate-100 dark:border-slate-800/80">
           {/* Status Filter Pills */}
           <div className="flex items-center gap-1.5 flex-wrap">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-400 mr-1 min-w-16">
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mr-1 min-w-16">
               Status:
             </span>
             {STATUS_FILTERS.map((filter) => {
@@ -176,10 +176,10 @@ export default function FeedList({ posts, currentUserId }: FeedListProps) {
                   key={filter.id}
                   type="button"
                   onClick={() => setSelectedStatus(filter.id)}
-                  className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-150 cursor-pointer select-none ${
+                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all duration-150 cursor-pointer select-none border ${
                     isSelected
-                      ? "bg-slate-900 text-white shadow-xs"
-                      : "bg-slate-100/90 text-slate-600 hover:bg-slate-200/80 hover:text-slate-900"
+                      ? "bg-slate-900 text-white border-slate-900 dark:bg-blue-600 dark:border-blue-600 dark:text-white shadow-xs scale-102"
+                      : "bg-slate-100/90 dark:bg-slate-800/70 text-slate-600 dark:text-slate-300 border-slate-200/70 dark:border-slate-700/60 hover:bg-slate-200/80 dark:hover:bg-slate-700/80 hover:text-slate-900 dark:hover:text-white"
                   }`}
                 >
                   {filter.emoji && <span>{filter.emoji}</span>}
@@ -192,7 +192,7 @@ export default function FeedList({ posts, currentUserId }: FeedListProps) {
           {/* Severity Filter Pills */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div className="flex items-center gap-1.5 flex-wrap">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-400 mr-1 min-w-16">
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mr-1 min-w-16">
                 Severity:
               </span>
               {SEVERITY_FILTERS.map((filter) => {
@@ -202,10 +202,10 @@ export default function FeedList({ posts, currentUserId }: FeedListProps) {
                     key={filter.id}
                     type="button"
                     onClick={() => setSelectedSeverity(filter.id)}
-                    className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-150 cursor-pointer select-none ${
+                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all duration-150 cursor-pointer select-none border ${
                       isSelected
-                        ? "bg-slate-900 text-white shadow-xs"
-                        : "bg-slate-100/90 text-slate-600 hover:bg-slate-200/80 hover:text-slate-900"
+                        ? "bg-slate-900 text-white border-slate-900 dark:bg-blue-600 dark:border-blue-600 dark:text-white shadow-xs scale-102"
+                        : "bg-slate-100/90 dark:bg-slate-800/70 text-slate-600 dark:text-slate-300 border-slate-200/70 dark:border-slate-700/60 hover:bg-slate-200/80 dark:hover:bg-slate-700/80 hover:text-slate-900 dark:hover:text-white"
                     }`}
                   >
                     {filter.emoji && <span>{filter.emoji}</span>}
@@ -215,16 +215,16 @@ export default function FeedList({ posts, currentUserId }: FeedListProps) {
               })}
             </div>
 
-            {/* Active filters status / Clear button */}
+            {/* Active filters count & Clear button */}
             {hasActiveFilters && (
-              <div className="flex items-center gap-2 self-end sm:self-center text-xs pt-1 sm:pt-0">
-                <span className="text-slate-500 font-medium">
+              <div className="flex items-center gap-2.5 self-end sm:self-center text-xs pt-1 sm:pt-0">
+                <span className="text-slate-500 dark:text-slate-400 font-medium">
                   Showing {filteredPosts.length} of {localPosts.length}
                 </span>
                 <button
                   type="button"
                   onClick={handleClearFilters}
-                  className="font-semibold text-blue-600 hover:text-blue-800 hover:underline cursor-pointer"
+                  className="font-bold text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 hover:underline cursor-pointer"
                 >
                   Clear all
                 </button>
@@ -236,15 +236,16 @@ export default function FeedList({ posts, currentUserId }: FeedListProps) {
 
       {/* Feed Header */}
       <div className="flex items-center justify-between pt-1">
-        <div className="flex items-center gap-2">
-          <h3 className="text-xl font-bold text-slate-900 tracking-tight">
+        <div className="flex items-center gap-2.5">
+          <h3 className="text-xl font-extrabold text-slate-900 dark:text-white tracking-tight">
             Live Flood Reports
           </h3>
-          <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-200 text-slate-700">
+          <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-300/50 dark:border-slate-700">
             {filteredPosts.length}
           </span>
         </div>
-        <span className="text-xs text-slate-500 font-medium">
+        <span className="text-xs text-slate-500 dark:text-slate-400 font-semibold flex items-center gap-1.5">
+          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
           Updated in real-time
         </span>
       </div>
@@ -252,21 +253,21 @@ export default function FeedList({ posts, currentUserId }: FeedListProps) {
       {/* Empty States */}
       {/* 1. Database is completely empty */}
       {localPosts.length === 0 && (
-        <div className="bg-white rounded-3xl border border-slate-200/90 shadow-sm p-10 sm:p-12 text-center space-y-4">
-          <div className="w-16 h-16 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-3xl mx-auto shadow-inner">
+        <div className="bg-white dark:bg-slate-900/90 rounded-3xl border border-slate-200/90 dark:border-slate-800 shadow-sm p-10 sm:p-12 text-center space-y-4">
+          <div className="w-16 h-16 rounded-2xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center text-3xl mx-auto shadow-inner">
             ☀️
           </div>
           <div className="space-y-1">
-            <h3 className="text-lg font-bold text-slate-900">
+            <h3 className="text-lg font-bold text-slate-900 dark:text-white">
               No flood reports right now
             </h3>
-            <p className="text-sm text-slate-500 max-w-sm mx-auto">
+            <p className="text-sm text-slate-500 dark:text-slate-400 max-w-sm mx-auto">
               Looks like roads are clear! Be the first to report any rising water levels or blocked drainage.
             </p>
           </div>
           <Link
             href="/report/new"
-            className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-5 py-2.5 rounded-xl shadow-md shadow-blue-600/20 hover:shadow-lg transition-all"
+            className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold px-5 py-3 rounded-xl shadow-md shadow-blue-600/25 hover:shadow-lg transition-all"
           >
             <span>+ Create First Report</span>
           </Link>
@@ -275,22 +276,22 @@ export default function FeedList({ posts, currentUserId }: FeedListProps) {
 
       {/* 2. Filter / Search yielded 0 results */}
       {localPosts.length > 0 && filteredPosts.length === 0 && (
-        <div className="bg-white rounded-3xl border border-slate-200/90 shadow-sm p-8 sm:p-10 text-center space-y-4">
-          <div className="w-14 h-14 rounded-2xl bg-slate-100 text-slate-500 flex items-center justify-center text-2xl mx-auto shadow-inner">
+        <div className="bg-white dark:bg-slate-900/90 rounded-3xl border border-slate-200/90 dark:border-slate-800 shadow-sm p-8 sm:p-10 text-center space-y-4">
+          <div className="w-14 h-14 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 flex items-center justify-center text-2xl mx-auto shadow-inner">
             🔍
           </div>
           <div className="space-y-1">
-            <h3 className="text-lg font-bold text-slate-900">
+            <h3 className="text-lg font-bold text-slate-900 dark:text-white">
               No flood reports match your search
             </h3>
-            <p className="text-sm text-slate-500 max-w-md mx-auto leading-relaxed">
+            <p className="text-sm text-slate-500 dark:text-slate-400 max-w-md mx-auto leading-relaxed">
               No reports found matching your selected filters. Try searching for a different location or adjusting the severity/status filters.
             </p>
           </div>
           <button
             type="button"
             onClick={handleClearFilters}
-            className="inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-sm transition-all cursor-pointer"
+            className="inline-flex items-center gap-2 bg-slate-900 dark:bg-slate-800 hover:bg-slate-800 dark:hover:bg-slate-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-sm transition-all cursor-pointer border border-slate-700/50"
           >
             Clear Filters
           </button>
@@ -308,14 +309,14 @@ export default function FeedList({ posts, currentUserId }: FeedListProps) {
           return (
             <article
               key={post.id}
-              className="bg-white rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden"
+              className="bg-white dark:bg-slate-900/90 rounded-3xl border border-slate-200/80 dark:border-slate-800/80 shadow-sm hover:shadow-md dark:hover:shadow-slate-950/60 transition-all duration-200 overflow-hidden"
             >
               {/* Post Header */}
               <div className="p-5 sm:p-6 pb-4">
                 <div className="flex items-start justify-between gap-4">
                   {/* User profile info */}
                   <div className="flex items-center gap-3">
-                    <div className="w-11 h-11 rounded-full ring-2 ring-slate-100 bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center overflow-hidden shrink-0 shadow-xs">
+                    <div className="w-11 h-11 rounded-2xl ring-2 ring-slate-100 dark:ring-slate-800 bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-700 flex items-center justify-center overflow-hidden shrink-0 shadow-xs">
                       {post.profiles?.avatar_url ? (
                         <img
                           src={post.profiles.avatar_url}
@@ -323,7 +324,7 @@ export default function FeedList({ posts, currentUserId }: FeedListProps) {
                           className="w-full h-full object-cover"
                         />
                       ) : (
-                        <span className="text-base font-bold text-slate-600">
+                        <span className="text-base font-bold text-slate-600 dark:text-slate-300">
                           {post.profiles?.display_name?.charAt(0)?.toUpperCase() || "👤"}
                         </span>
                       )}
@@ -331,11 +332,11 @@ export default function FeedList({ posts, currentUserId }: FeedListProps) {
 
                     <div>
                       <div className="flex items-center gap-2 flex-wrap">
-                        <p className="font-bold text-slate-900 hover:text-blue-600 transition-colors">
+                        <p className="font-bold text-slate-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                           {post.profiles?.display_name || "Community Member"}
                         </p>
                         {isOwner && (
-                          <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200">
+                          <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800/60">
                             You
                           </span>
                         )}
@@ -343,7 +344,7 @@ export default function FeedList({ posts, currentUserId }: FeedListProps) {
                         {isPostRecent && <RecentBadge />}
                       </div>
 
-                      <p className="text-xs text-slate-500 mt-0.5 flex items-center gap-1.5 flex-wrap">
+                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 flex items-center gap-1.5 flex-wrap">
                         <span>@{post.profiles?.username || "user"}</span>
                         <span>•</span>
                         <time dateTime={post.created_at} title={postDate.toLocaleString()}>
@@ -367,7 +368,7 @@ export default function FeedList({ posts, currentUserId }: FeedListProps) {
 
                       <Link
                         href={`/report/edit/${post.id}`}
-                        className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-colors"
+                        className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950/40 rounded-xl transition-colors"
                         title="Edit report"
                       >
                         <svg
@@ -397,10 +398,10 @@ export default function FeedList({ posts, currentUserId }: FeedListProps) {
 
                 {/* Location Badge */}
                 <div className="mt-4">
-                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-semibold bg-amber-50 text-amber-900 border border-amber-200/80 shadow-2xs">
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-amber-50 dark:bg-amber-950/40 text-amber-900 dark:text-amber-200 border border-amber-200/80 dark:border-amber-800/60 shadow-2xs">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      className="w-3.5 h-3.5 text-amber-600 shrink-0"
+                      className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400 shrink-0"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -422,13 +423,13 @@ export default function FeedList({ posts, currentUserId }: FeedListProps) {
                 </div>
 
                 {/* Badges Row: Severity & Status */}
-                <div className="mt-2.5 flex items-center gap-2 flex-wrap">
+                <div className="mt-3 flex items-center gap-2 flex-wrap">
                   <SeverityBadge severity={post.severity} />
                   <StatusBadge status={post.status} />
                 </div>
 
                 {/* Description */}
-                <p className="mt-3 text-slate-800 text-sm sm:text-base leading-relaxed whitespace-pre-wrap">
+                <p className="mt-3.5 text-slate-800 dark:text-slate-200 text-sm sm:text-base leading-relaxed whitespace-pre-wrap font-normal">
                   {post.description}
                 </p>
                 
@@ -443,7 +444,7 @@ export default function FeedList({ posts, currentUserId }: FeedListProps) {
 
               {/* Flood Image */}
               {post.image_url && (
-                <div className="relative bg-slate-950/5 border-t border-slate-100 overflow-hidden">
+                <div className="relative bg-slate-950/5 dark:bg-slate-950/40 border-t border-slate-100 dark:border-slate-800 overflow-hidden">
                   <img
                     src={post.image_url}
                     alt={`Flood report at ${post.location}`}

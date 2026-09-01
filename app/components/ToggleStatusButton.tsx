@@ -53,10 +53,10 @@ export default function ToggleStatusButton({
       type="button"
       onClick={handleToggle}
       disabled={loading}
-      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all duration-150 cursor-pointer disabled:opacity-50 border ${
+      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all duration-150 cursor-pointer disabled:opacity-50 border shadow-2xs ${
         isResolved
-          ? "bg-rose-50 hover:bg-rose-100 text-rose-700 border-rose-200"
-          : "bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border-emerald-200"
+          ? "bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/40 dark:hover:bg-rose-900/60 text-rose-700 dark:text-rose-300 border-rose-200 dark:border-rose-800/50"
+          : "bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/40 dark:hover:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800/50"
       }`}
       title={isResolved ? "Mark report as active again" : "Mark report as resolved / water subsided"}
     >
@@ -84,7 +84,7 @@ export default function ToggleStatusButton({
       ) : isResolved ? (
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          className="w-3.5 h-3.5 text-rose-600"
+          className="w-3.5 h-3.5 text-rose-600 dark:text-rose-400"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -99,7 +99,7 @@ export default function ToggleStatusButton({
       ) : (
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          className="w-3.5 h-3.5 text-emerald-600"
+          className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"

@@ -46,7 +46,7 @@ export default function DeletePostButton({
     <>
       <button
         onClick={() => setIsOpen(true)}
-        className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-slate-500 hover:text-red-600 hover:bg-red-50 rounded-md transition-colors cursor-pointer"
+        className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 rounded-xl transition-colors cursor-pointer"
         title="Delete report"
       >
         <svg
@@ -63,14 +63,14 @@ export default function DeletePostButton({
             d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
           />
         </svg>
-        Delete
+        <span>Delete</span>
       </button>
 
       {/* Confirmation Modal */}
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs animate-in fade-in duration-200">
-          <div className="w-full max-w-sm bg-white rounded-2xl p-6 shadow-xl border border-slate-100 text-left">
-            <div className="w-12 h-12 rounded-full bg-red-100 text-red-600 flex items-center justify-center mb-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs animate-in fade-in duration-200">
+          <div className="w-full max-w-sm bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-7 shadow-2xl border border-slate-200/80 dark:border-slate-800 text-left">
+            <div className="w-12 h-12 rounded-2xl bg-red-100 dark:bg-red-950/60 text-red-600 dark:text-red-400 flex items-center justify-center mb-4 shadow-inner">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="w-6 h-6"
@@ -87,20 +87,20 @@ export default function DeletePostButton({
               </svg>
             </div>
 
-            <h3 className="text-lg font-bold text-slate-900">
+            <h3 className="text-lg font-bold text-slate-900 dark:text-white">
               Delete Flood Report?
             </h3>
-            <p className="mt-2 text-sm text-slate-600 leading-relaxed">
+            <p className="mt-2 text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
               Are you sure you want to delete this report? This action cannot be undone and will remove the report from the community feed.
             </p>
 
             {error && (
-              <div className="mt-3 p-2.5 bg-red-50 text-red-600 text-xs rounded-lg">
+              <div className="mt-3 p-2.5 bg-red-50 dark:bg-red-950/50 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-800/60 text-xs rounded-xl">
                 {error}
               </div>
             )}
 
-            <div className="mt-6 flex items-center justify-end gap-3">
+            <div className="mt-6 flex items-center justify-end gap-2.5">
               <button
                 type="button"
                 onClick={() => {
@@ -108,7 +108,7 @@ export default function DeletePostButton({
                   setError("");
                 }}
                 disabled={isDeleting}
-                className="px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
+                className="px-4 py-2.5 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors cursor-pointer"
               >
                 Cancel
               </button>
@@ -116,7 +116,7 @@ export default function DeletePostButton({
                 type="button"
                 onClick={handleDelete}
                 disabled={isDeleting}
-                className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-white bg-red-600 hover:bg-red-700 rounded-lg shadow-sm shadow-red-600/20 transition-all disabled:opacity-50 cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-4 py-2.5 text-xs font-bold text-white bg-red-600 hover:bg-red-700 dark:bg-red-600 dark:hover:bg-red-500 rounded-xl shadow-md shadow-red-600/25 transition-all disabled:opacity-50 cursor-pointer"
               >
                 {isDeleting ? (
                   <>

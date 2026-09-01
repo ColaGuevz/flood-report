@@ -12,7 +12,9 @@
     "test:integration": "vitest run tests/integration",
     "test:e2e": "playwright test",
     "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "seed": "node --env-file=.env.local --import=tsx scripts/seed.mts",
+    "seed:clear": "node --env-file=.env.local --import=tsx scripts/seed-clear.mts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.5",
@@ -35,6 +37,7 @@
     "eslint-config-next": "16.3.3",
     "jsdom": "^30.0.1",
     "tailwindcss": "^4",
+    "tsx": "^4.23.13",
     "typescript": "^5",
     "vitest": "^4.1.11"
   }
