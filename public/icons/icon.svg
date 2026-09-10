@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e3a8a" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3b82f6" />
+      <stop offset="100%" stop-color="#1d4ed8" />
+    </linearGradient>
+  </defs>
+  <!-- Background Shield Container -->
+  <rect width="512" height="512" rx="112" fill="url(#bg)" />
+  <rect x="16" y="16" width="480" height="480" rx="96" fill="none" stroke="#3b82f6" stroke-width="4" stroke-opacity="0.3" />
+  
+  <!-- Civic Crest Inner Frame -->
+  <circle cx="256" cy="256" r="180" fill="#1e293b" fill-opacity="0.6" stroke="#60a5fa" stroke-width="6" />
+  
+  <!-- Emergency Water & Hazard Icon -->
+  <g fill="none" stroke="#ffffff" stroke-width="20" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Water Waves -->
+    <path d="M140 290 Q 198 250 256 290 T 372 290" stroke="#38bdf8" stroke-width="22" />
+    <path d="M110 350 Q 183 310 256 350 T 402 350" stroke="#0ea5e9" stroke-width="22" />
+    <!-- Alert Beacon / Pin -->
+    <path d="M256 120 C 218 120 186 152 186 190 C 186 242 256 310 256 310 C 256 310 326 242 326 190 C 326 152 294 120 256 120 Z" fill="#ef4444" stroke="#ffffff" stroke-width="12" />
+    <circle cx="256" cy="190" r="26" fill="#ffffff" stroke="none" />
+  </g>
+</svg>

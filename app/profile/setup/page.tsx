@@ -3,14 +3,15 @@
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
+import { useToast } from "@/app/components/Toast";
 
 export default function ProfileSetup() {
   const [displayName, setDisplayName] = useState("");
   const [username, setUsername] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-
   const router = useRouter();
+  const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,6 +45,12 @@ export default function ProfileSetup() {
         return;
       }
 
+      toast({
+        type: "success",
+        title: "Account Setup Complete",
+        message: "Welcome to the FloodWatch Community Safety Network.",
+      });
+
       router.push("/");
       router.refresh();
     } catch (err: any) {
@@ -53,27 +60,30 @@ export default function ProfileSetup() {
   };
 
   return (
-    <main className="min-h-screen bg-slate-50 dark:bg-[#0b1120] flex items-center justify-center px-4 sm:px-6 py-12 transition-colors duration-200">
+    <main className="min-h-screen bg-slate-50 dark:bg-[#090e17] flex items-center justify-center px-4 sm:px-6 py-12 transition-colors duration-150">
       <div className="w-full max-w-md">
-        <div className="bg-white dark:bg-slate-900/90 rounded-3xl border border-slate-200/90 dark:border-slate-800 shadow-2xl shadow-slate-200/50 dark:shadow-black/60 p-8 sm:p-10 transition-colors duration-200">
-          <div className="text-center">
-            <div className="w-14 h-14 rounded-2xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center text-3xl mx-auto shadow-inner mb-4">
+        <div className="bg-white dark:bg-[#0f172a] rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-6 sm:p-8">
+          <div className="text-center space-y-2">
+            <div className="w-12 h-12 rounded-xl bg-blue-700 text-white flex items-center justify-center text-xl font-bold mx-auto">
               👤
             </div>
 
-            <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-              Complete Your Profile
+            <h1 className="text-lg font-bold text-slate-900 dark:text-white tracking-tight">
+              Complete Citizen Identity
             </h1>
 
-            <p className="mt-2 text-xs sm:text-sm text-slate-500 dark:text-slate-400">
-              Set up your public identity before posting or viewing community flood updates.
+            <p className="text-xs text-slate-500 dark:text-slate-400">
+              Establish your verified profile before broadcasting or confirming community hazard alerts.
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="mt-8 space-y-5">
-            <div>
-              <label htmlFor="displayName" className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
-                Display Name <span className="text-rose-500">*</span>
+          <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+            <div className="space-y-1">
+              <label
+                htmlFor="displayName"
+                className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300"
+              >
+                Full Display Name <span className="text-rose-500">*</span>
               </label>
 
               <input
@@ -83,17 +93,20 @@ export default function ProfileSetup() {
                 onChange={(e) => setDisplayName(e.target.value)}
                 placeholder="e.g. Juan dela Cruz"
                 required
-                className="w-full rounded-2xl border border-slate-300 dark:border-slate-700 px-4 py-3 text-sm text-slate-900 dark:text-white bg-white dark:bg-slate-800 placeholder-slate-400 dark:placeholder-slate-500 outline-none transition focus:border-blue-600 dark:focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 shadow-2xs"
+                className="w-full rounded-xl border border-slate-300 dark:border-slate-700 px-3.5 py-2 text-sm text-slate-900 dark:text-white bg-white dark:bg-slate-800 placeholder-slate-400 dark:placeholder-slate-500 outline-none transition focus:border-blue-600 dark:focus:border-blue-500"
               />
             </div>
 
-            <div>
-              <label htmlFor="username" className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
-                Username <span className="text-rose-500">*</span>
+            <div className="space-y-1">
+              <label
+                htmlFor="username"
+                className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300"
+              >
+                Username Handle <span className="text-rose-500">*</span>
               </label>
 
               <div className="relative">
-                <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 dark:text-slate-500 text-sm font-semibold">
+                <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 text-xs font-bold">
                   @
                 </span>
                 <input
@@ -105,54 +118,27 @@ export default function ProfileSetup() {
                   }
                   placeholder="juandelacruz"
                   required
-                  className="w-full rounded-2xl border border-slate-300 dark:border-slate-700 pl-8 pr-4 py-3 text-sm text-slate-900 dark:text-white bg-white dark:bg-slate-800 placeholder-slate-400 dark:placeholder-slate-500 outline-none transition focus:border-blue-600 dark:focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 shadow-2xs"
+                  className="w-full rounded-xl border border-slate-300 dark:border-slate-700 pl-8 pr-3.5 py-2 text-sm text-slate-900 dark:text-white bg-white dark:bg-slate-800 placeholder-slate-400 dark:placeholder-slate-500 outline-none transition focus:border-blue-600 dark:focus:border-blue-500"
                 />
               </div>
 
-              <p className="mt-1.5 text-[11px] text-slate-400 dark:text-slate-400">
+              <p className="text-[10px] text-slate-400">
                 Letters, numbers, and underscores only.
               </p>
             </div>
 
             {error && (
-              <div className="bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-800/60 text-rose-700 dark:text-rose-300 rounded-2xl p-3.5 text-xs font-medium flex items-center gap-2">
-                <span>⚠️</span>
-                <span>{error}</span>
+              <div className="bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-800 text-rose-700 dark:text-rose-300 rounded-lg p-2.5 text-xs font-semibold">
+                ⚠️ {error}
               </div>
             )}
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full mt-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-500 text-white font-bold py-3.5 px-4 rounded-2xl shadow-md shadow-blue-600/25 hover:shadow-lg transition-all duration-150 disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer text-sm"
+              className="w-full mt-2 bg-blue-700 hover:bg-blue-800 dark:bg-blue-600 dark:hover:bg-blue-500 text-white font-semibold py-2.5 px-4 rounded-xl transition-colors disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer text-xs"
             >
-              {loading ? (
-                <>
-                  <svg
-                    className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    ></circle>
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    ></path>
-                  </svg>
-                  Saving Profile...
-                </>
-              ) : (
-                "Complete Setup & Continue →"
-              )}
+              {loading ? "Saving Profile..." : "Complete Setup & Enter Portal →"}
             </button>
           </form>
         </div>

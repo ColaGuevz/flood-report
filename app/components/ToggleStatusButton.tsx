@@ -4,6 +4,7 @@ import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import { ReportStatus } from "./StatusBadge";
+import { useToast } from "./Toast";
 
 interface ToggleStatusButtonProps {
   postId: string;
@@ -20,6 +21,7 @@ export default function ToggleStatusButton({
 }: ToggleStatusButtonProps) {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const { toast } = useToast();
 
   const isResolved = currentStatus === "resolved";
   const nextStatus: ReportStatus = isResolved ? "active" : "resolved";
@@ -39,10 +41,22 @@ export default function ToggleStatusButton({
       }
 
       onStatusChange?.(nextStatus);
+      toast({
+        type: "success",
+        title: nextStatus === "resolved" ? "Report Resolved" : "Report Re-activated",
+        message:
+          nextStatus === "resolved"
+            ? "Marked as flood waters resolved / clear."
+            : "Marked as flooding active.",
+      });
       router.refresh();
-    } catch (err) {
+    } catch (err: any) {
       console.error("Failed to update status:", err);
-      alert("Failed to update status. Please make sure you are logged in as the report owner.");
+      toast({
+        type: "error",
+        title: "Status Update Failed",
+        message: err?.message || "Please make sure you are logged in as the report author.",
+      });
     } finally {
       setLoading(false);
     }
@@ -53,12 +67,12 @@ export default function ToggleStatusButton({
       type="button"
       onClick={handleToggle}
       disabled={loading}
-      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all duration-150 cursor-pointer disabled:opacity-50 border shadow-2xs ${
+      className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-colors duration-150 cursor-pointer disabled:opacity-50 border ${
         isResolved
-          ? "bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/40 dark:hover:bg-rose-900/60 text-rose-700 dark:text-rose-300 border-rose-200 dark:border-rose-800/50"
-          : "bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/40 dark:hover:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800/50"
+          ? "bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/40 dark:hover:bg-rose-900/60 text-rose-700 dark:text-rose-300 border-rose-200 dark:border-rose-800"
+          : "bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/40 dark:hover:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800"
       }`}
-      title={isResolved ? "Mark report as active again" : "Mark report as resolved / water subsided"}
+      title={isResolved ? "Re-open: Mark report as active again" : "Mark report as resolved (flood waters subsided)"}
     >
       {loading ? (
         <svg
@@ -88,7 +102,7 @@ export default function ToggleStatusButton({
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
-          strokeWidth={2.5}
+          strokeWidth={2}
         >
           <path
             strokeLinecap="round"
@@ -103,7 +117,7 @@ export default function ToggleStatusButton({
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
-          strokeWidth={2.5}
+          strokeWidth={2}
         >
           <path
             strokeLinecap="round"
@@ -112,7 +126,7 @@ export default function ToggleStatusButton({
           />
         </svg>
       )}
-      <span>{isResolved ? "Mark as Active" : "Mark as Resolved"}</span>
+      <span>{isResolved ? "Mark Active" : "Mark Resolved"}</span>
     </button>
   );
 }

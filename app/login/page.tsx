@@ -24,50 +24,58 @@ export default function Login() {
   };
 
   return (
-    <main className="min-h-screen bg-slate-900 dark:bg-[#070b14] relative flex items-center justify-center px-4 sm:px-6 overflow-hidden transition-colors duration-200">
-      {/* Ambient background glows */}
-      <div className="absolute top-1/4 -left-20 w-96 h-96 bg-blue-600/25 dark:bg-blue-600/15 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-indigo-600/25 dark:bg-cyan-600/15 rounded-full blur-3xl pointer-events-none" />
-
-      <div className="w-full max-w-md relative z-10">
-        <div className="bg-white/95 dark:bg-slate-900/90 backdrop-blur-2xl rounded-3xl shadow-2xl shadow-black/50 p-8 sm:p-10 border border-white/20 dark:border-slate-800 text-center transition-colors duration-200">
-          {/* Logo Badge */}
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-600 via-blue-500 to-cyan-400 text-3xl flex items-center justify-center mx-auto shadow-lg shadow-blue-500/25 mb-5">
-            🌧️
+    <main className="min-h-screen bg-slate-900 dark:bg-[#070b14] flex items-center justify-center px-4 sm:px-6 py-12 transition-colors duration-150">
+      <div className="w-full max-w-md">
+        <div className="bg-white dark:bg-[#0f172a] rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800 p-8 text-center transition-colors duration-150">
+          {/* Logo Crest */}
+          <div className="w-12 h-12 rounded-xl bg-blue-700 text-white text-xl flex items-center justify-center mx-auto mb-4 font-bold shadow-xs">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="w-6 h-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2.2}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"
+              />
+            </svg>
           </div>
 
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800/60 mb-3 shadow-2xs">
-            <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></span>
-            Community Safety Network
+          <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded text-[11px] font-semibold bg-blue-50 text-blue-800 dark:bg-blue-950/60 dark:text-blue-300 border border-blue-200 dark:border-blue-900 mb-3">
+            <span>🛡️ Official Civic Safety Portal</span>
           </div>
 
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-            FloodWatch
+          <h1 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
+            FloodWatch Portal
           </h1>
 
-          <p className="mt-2.5 text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-            Real-time flood alerts, crowdsourced road conditions, and community safety updates.
+          <p className="mt-2 text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+            Real-time community flood monitoring, road conditions network, and verified disaster hazard reporting.
           </p>
 
-          {/* Feature Highlights */}
-          <div className="mt-6 pt-6 border-t border-slate-100 dark:border-slate-800 space-y-2.5 text-left text-xs text-slate-600 dark:text-slate-300">
-            <div className="flex items-center gap-2.5">
-              <span className="w-5 h-5 rounded-full bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-400 flex items-center justify-center font-bold text-[10px] shrink-0 border border-emerald-200 dark:border-emerald-800/50">
+          {/* Civic Values Checklist */}
+          <div className="mt-6 pt-5 border-t border-slate-100 dark:border-slate-800 space-y-2 text-left text-xs text-slate-600 dark:text-slate-300">
+            <div className="flex items-center gap-2">
+              <span className="w-4 h-4 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400 flex items-center justify-center font-bold text-[10px] shrink-0">
                 ✓
               </span>
-              <span>Live community-reported flood levels</span>
+              <span>Live community-verified road & water levels</span>
             </div>
-            <div className="flex items-center gap-2.5">
-              <span className="w-5 h-5 rounded-full bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-400 flex items-center justify-center font-bold text-[10px] shrink-0 border border-emerald-200 dark:border-emerald-800/50">
+            <div className="flex items-center gap-2">
+              <span className="w-4 h-4 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400 flex items-center justify-center font-bold text-[10px] shrink-0">
                 ✓
               </span>
-              <span>Exact locations and verified photos</span>
+              <span>Exact street coordinates and photo evidence</span>
             </div>
-            <div className="flex items-center gap-2.5">
-              <span className="w-5 h-5 rounded-full bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-400 flex items-center justify-center font-bold text-[10px] shrink-0 border border-emerald-200 dark:border-emerald-800/50">
+            <div className="flex items-center gap-2">
+              <span className="w-4 h-4 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400 flex items-center justify-center font-bold text-[10px] shrink-0">
                 ✓
               </span>
-              <span>Help your neighbors stay safe & informed</span>
+              <span>Assisting motorists, commuters & emergency units</span>
             </div>
           </div>
 
@@ -75,16 +83,16 @@ export default function Login() {
           <button
             onClick={handleGoogleLogin}
             disabled={loading}
-            className="w-full mt-8 bg-white hover:bg-slate-50 dark:bg-slate-800 dark:hover:bg-slate-750 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-100 font-bold py-3.5 px-4 rounded-2xl shadow-xs hover:shadow-md hover:border-slate-400 dark:hover:border-slate-600 transition-all duration-150 flex items-center justify-center gap-3 cursor-pointer group disabled:opacity-50"
+            className="w-full mt-6 bg-white hover:bg-slate-50 dark:bg-slate-800 dark:hover:bg-slate-750 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-100 font-semibold py-2.5 px-4 rounded-xl shadow-xs transition-colors flex items-center justify-center gap-2.5 cursor-pointer disabled:opacity-50 text-xs sm:text-sm"
           >
             {loading ? (
               <div className="flex items-center gap-2">
                 <div className="w-4 h-4 border-2 border-slate-600 dark:border-slate-300 border-t-transparent rounded-full animate-spin"></div>
-                <span>Connecting...</span>
+                <span>Connecting to Google...</span>
               </div>
             ) : (
               <>
-                <svg className="w-5 h-5" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24">
                   <path
                     fill="#4285F4"
                     d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"
@@ -107,8 +115,8 @@ export default function Login() {
             )}
           </button>
 
-          <p className="mt-6 text-[11px] text-slate-400 dark:text-slate-400 font-medium">
-            By signing in, you agree to submit helpful and accurate flood reports.
+          <p className="mt-4 text-[11px] text-slate-500 dark:text-slate-400">
+            By signing in, you agree to submit truthful and verified emergency reports.
           </p>
         </div>
       </div>

@@ -1,7 +1,9 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "./components/ThemeProvider";
+import { ToastProvider } from "./components/Toast";
+import MobileBottomNav from "./components/MobileBottomNav";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -13,10 +15,37 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#090e17" },
+  ],
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+};
+
 export const metadata: Metadata = {
-  title: "FloodWatch — Real-time Community Flood Reports",
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_APP_URL ||
+      process.env.NEXT_PUBLIC_SITE_URL ||
+      "http://localhost:3000"
+  ),
+  title: {
+    default: "FloodWatch — Community Flood Safety Network",
+    template: "%s | FloodWatch",
+  },
   description:
-    "Stay informed and share live flood conditions with your local community.",
+    "Real-time civic flood reporting and community road conditions network. Stay informed and broadcast verified local hazard alerts.",
+  applicationName: "FloodWatch",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "FloodWatch",
+  },
+  formatDetection: {
+    telephone: false,
+  },
 };
 
 export default function RootLayout({
@@ -47,8 +76,13 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="min-h-full flex flex-col font-sans bg-slate-50 dark:bg-[#0b1120] text-slate-900 dark:text-slate-100 selection:bg-blue-600 selection:text-white transition-colors duration-200">
-        <ThemeProvider>{children}</ThemeProvider>
+      <body className="min-h-full flex flex-col font-sans bg-slate-50 dark:bg-[#090e17] text-slate-900 dark:text-slate-100 selection:bg-blue-600 selection:text-white transition-colors duration-150 pb-16 sm:pb-0">
+        <ThemeProvider>
+          <ToastProvider>
+            {children}
+            <MobileBottomNav />
+          </ToastProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

@@ -3,20 +3,24 @@
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
+import { useToast } from "./Toast";
 
 interface DeletePostButtonProps {
   postId: string;
   userId: string;
+  redirectOnDelete?: string;
 }
 
 export default function DeletePostButton({
   postId,
   userId,
+  redirectOnDelete,
 }: DeletePostButtonProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [error, setError] = useState("");
   const router = useRouter();
+  const { toast } = useToast();
 
   const handleDelete = async () => {
     setIsDeleting(true);
@@ -35,18 +39,34 @@ export default function DeletePostButton({
       }
 
       setIsOpen(false);
-      router.refresh();
+      toast({
+        type: "info",
+        title: "Report Removed",
+        message: "Your flood report has been deleted from the public feed.",
+      });
+
+      if (redirectOnDelete) {
+        router.push(redirectOnDelete);
+      } else {
+        router.refresh();
+      }
     } catch (err: any) {
       setError(err?.message || "Failed to delete post.");
       setIsDeleting(false);
+      toast({
+        type: "error",
+        title: "Deletion Failed",
+        message: err?.message || "Could not delete report.",
+      });
     }
   };
 
   return (
     <>
       <button
+        type="button"
         onClick={() => setIsOpen(true)}
-        className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 rounded-xl transition-colors cursor-pointer"
+        className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold text-slate-500 hover:text-rose-600 dark:text-slate-400 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-lg transition-colors cursor-pointer border border-transparent hover:border-rose-200 dark:hover:border-rose-800"
         title="Delete report"
       >
         <svg
@@ -68,12 +88,16 @@ export default function DeletePostButton({
 
       {/* Confirmation Modal */}
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs animate-in fade-in duration-200">
-          <div className="w-full max-w-sm bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-7 shadow-2xl border border-slate-200/80 dark:border-slate-800 text-left">
-            <div className="w-12 h-12 rounded-2xl bg-red-100 dark:bg-red-950/60 text-red-600 dark:text-red-400 flex items-center justify-center mb-4 shadow-inner">
+        <div
+          role="dialog"
+          aria-modal="true"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs animate-in fade-in duration-150"
+        >
+          <div className="w-full max-w-sm bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-xl border border-slate-200 dark:border-slate-800 text-left animate-in zoom-in-95 duration-150">
+            <div className="w-10 h-10 rounded-lg bg-rose-100 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 flex items-center justify-center mb-4">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="w-6 h-6"
+                className="w-5 h-5"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -87,20 +111,20 @@ export default function DeletePostButton({
               </svg>
             </div>
 
-            <h3 className="text-lg font-bold text-slate-900 dark:text-white">
+            <h3 className="text-base font-bold text-slate-900 dark:text-white">
               Delete Flood Report?
             </h3>
-            <p className="mt-2 text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-              Are you sure you want to delete this report? This action cannot be undone and will remove the report from the community feed.
+            <p className="mt-2 text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+              This report will be permanently removed from the live public feed and cannot be restored.
             </p>
 
             {error && (
-              <div className="mt-3 p-2.5 bg-red-50 dark:bg-red-950/50 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-800/60 text-xs rounded-xl">
+              <div className="mt-3 p-2.5 bg-rose-50 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-800 text-xs rounded-lg">
                 {error}
               </div>
             )}
 
-            <div className="mt-6 flex items-center justify-end gap-2.5">
+            <div className="mt-6 flex items-center justify-end gap-2">
               <button
                 type="button"
                 onClick={() => {
@@ -108,7 +132,7 @@ export default function DeletePostButton({
                   setError("");
                 }}
                 disabled={isDeleting}
-                className="px-4 py-2.5 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors cursor-pointer"
+                className="px-3.5 py-2 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
               >
                 Cancel
               </button>
@@ -116,35 +140,9 @@ export default function DeletePostButton({
                 type="button"
                 onClick={handleDelete}
                 disabled={isDeleting}
-                className="inline-flex items-center gap-1.5 px-4 py-2.5 text-xs font-bold text-white bg-red-600 hover:bg-red-700 dark:bg-red-600 dark:hover:bg-red-500 rounded-xl shadow-md shadow-red-600/25 transition-all disabled:opacity-50 cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold text-white bg-rose-600 hover:bg-rose-700 rounded-lg transition-colors disabled:opacity-50 cursor-pointer"
               >
-                {isDeleting ? (
-                  <>
-                    <svg
-                      className="animate-spin -ml-0.5 mr-1 h-3.5 w-3.5 text-white"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                      ></circle>
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                      ></path>
-                    </svg>
-                    Deleting...
-                  </>
-                ) : (
-                  "Delete Report"
-                )}
+                {isDeleting ? "Deleting..." : "Delete Report"}
               </button>
             </div>
           </div>

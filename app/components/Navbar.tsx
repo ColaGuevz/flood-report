@@ -2,99 +2,165 @@ import Link from "next/link";
 import ThemeToggle from "./ThemeToggle";
 
 interface NavbarProps {
-  profile: {
+  profile?: {
     display_name: string;
     avatar_url: string | null;
     username: string;
-  };
+  } | null;
 }
 
 export default function Navbar({ profile }: NavbarProps) {
   return (
-    <header className="sticky top-0 z-30 backdrop-blur-xl bg-white/80 dark:bg-[#0b1120]/80 border-b border-slate-200/80 dark:border-slate-800/80 transition-colors duration-200 shadow-xs">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-        {/* Brand */}
-        <Link
-          href="/"
-          className="flex items-center gap-2.5 group focus:outline-none"
-        >
-          <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-blue-600 via-blue-500 to-cyan-400 flex items-center justify-center text-xl shadow-md shadow-blue-500/25 group-hover:scale-105 group-hover:shadow-blue-500/40 transition-all duration-200">
-            🌧️
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="text-lg font-extrabold text-slate-900 dark:text-white tracking-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                FloodWatch
-              </span>
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-800/60">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                LIVE
-              </span>
-            </div>
-            <p className="text-[11px] text-slate-500 dark:text-slate-400 hidden sm:block font-medium">
-              Community Flood Intelligence
-            </p>
-          </div>
-        </Link>
-
-        {/* User profile, ThemeToggle & Actions */}
-        <div className="flex items-center gap-2 sm:gap-3">
-          {/* Theme Toggle Button */}
-          <ThemeToggle />
-
-          {/* Profile link */}
+    <header className="sticky top-0 z-30 bg-white/90 dark:bg-[#0f172a]/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 transition-colors duration-150">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+        {/* Brand & Civic Safety Identifier */}
+        <div className="flex items-center gap-6">
           <Link
-            href="/profile"
-            className="flex items-center gap-2.5 p-1 sm:px-2.5 sm:py-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800/70 border border-transparent hover:border-slate-200 dark:hover:border-slate-700/60 transition-all group focus:outline-none"
-            title="View your profile"
+            href="/"
+            className="flex items-center gap-3 group focus:outline-none"
           >
-            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full ring-2 ring-blue-500/20 group-hover:ring-blue-500/60 bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-700 flex items-center justify-center overflow-hidden shrink-0 transition-all shadow-xs">
-              {profile.avatar_url ? (
-                <img
-                  src={profile.avatar_url}
-                  alt={profile.display_name}
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <span className="text-xs sm:text-sm font-bold text-blue-600 dark:text-blue-400">
-                  {profile.display_name?.charAt(0)?.toUpperCase() || "U"}
-                </span>
-              )}
-            </div>
-            <div className="hidden sm:block text-left">
-              <p className="text-xs font-bold text-slate-900 dark:text-slate-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 leading-tight transition-colors">
-                {profile.display_name}
-              </p>
-              <p className="text-[11px] text-slate-400 dark:text-slate-400">
-                @{profile.username}
-              </p>
-            </div>
-          </Link>
-
-          {/* Sign Out */}
-          <form action="/auth/signout" method="post">
-            <button
-              type="submit"
-              className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400 bg-slate-100/80 hover:bg-red-50 dark:bg-slate-800/80 dark:hover:bg-red-950/40 rounded-xl border border-slate-200/80 dark:border-slate-700/80 hover:border-red-200 dark:hover:border-red-800/50 transition-all cursor-pointer shadow-2xs hover:scale-102 active:scale-98"
-              title="Sign Out"
-            >
+            <div className="w-9 h-9 rounded-lg bg-blue-700 dark:bg-blue-600 text-white flex items-center justify-center font-bold text-lg shadow-xs group-hover:bg-blue-800 dark:group-hover:bg-blue-500 transition-colors">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="w-3.5 h-3.5"
+                className="w-5 h-5"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
-                strokeWidth={2}
+                strokeWidth={2.2}
               >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                  d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"
                 />
               </svg>
-              <span className="hidden md:inline">Sign Out</span>
-            </button>
-          </form>
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-base font-bold text-slate-900 dark:text-white tracking-tight">
+                  FloodWatch
+                </span>
+                <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-800">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                  LIVE CIVIC NETWORK
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium hidden md:block">
+                Community Flood Hazard Portal
+              </p>
+            </div>
+          </Link>
+
+          {/* Desktop Navigation Links */}
+          <nav className="hidden md:flex items-center gap-1 text-xs font-semibold text-slate-600 dark:text-slate-300">
+            <Link
+              href="/"
+              className="px-3 py-1.5 rounded-lg hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            >
+              Public Feed
+            </Link>
+            {profile && (
+              <Link
+                href="/profile"
+                className="px-3 py-1.5 rounded-lg hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              >
+                My Submissions
+              </Link>
+            )}
+          </nav>
+        </div>
+
+        {/* User profile / Guest controls, CTA & ThemeToggle */}
+        <div className="flex items-center gap-2 sm:gap-3">
+          {/* Quick Submit CTA (Desktop only - mobile has bottom nav) */}
+          <Link
+            href="/report/new"
+            className="hidden sm:inline-flex items-center gap-1.5 bg-blue-700 hover:bg-blue-800 dark:bg-blue-600 dark:hover:bg-blue-500 text-white font-semibold text-xs px-3.5 py-2 rounded-lg shadow-xs transition-colors"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="w-4 h-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2.5}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M12 4v16m8-8H4"
+              />
+            </svg>
+            <span>Submit Report</span>
+          </Link>
+
+          {/* Theme Toggle Button */}
+          <ThemeToggle />
+
+          {profile ? (
+            <>
+              {/* Profile link */}
+              <Link
+                href="/profile"
+                className="flex items-center gap-2 p-1 sm:px-2.5 sm:py-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 border border-transparent hover:border-slate-200 dark:hover:border-slate-700 transition-colors group focus:outline-none"
+                title="View your citizen profile"
+              >
+                <div className="w-8 h-8 rounded-full border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 flex items-center justify-center overflow-hidden shrink-0">
+                  {profile.avatar_url ? (
+                    <img
+                      src={profile.avatar_url}
+                      alt={profile.display_name}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                      {profile.display_name?.charAt(0)?.toUpperCase() || "U"}
+                    </span>
+                  )}
+                </div>
+                <div className="hidden lg:block text-left">
+                  <p className="text-xs font-semibold text-slate-900 dark:text-slate-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 leading-tight transition-colors">
+                    {profile.display_name}
+                  </p>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                    @{profile.username}
+                  </p>
+                </div>
+              </Link>
+
+              {/* Sign Out */}
+              <form action="/auth/signout" method="post">
+                <button
+                  type="submit"
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium text-slate-600 dark:text-slate-300 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-lg border border-slate-200 dark:border-slate-800 hover:border-rose-200 dark:hover:border-rose-800 transition-colors cursor-pointer"
+                  title="Sign Out"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="w-3.5 h-3.5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                    />
+                  </svg>
+                  <span className="hidden xl:inline">Sign Out</span>
+                </button>
+              </form>
+            </>
+          ) : (
+            <Link
+              href="/login"
+              className="inline-flex items-center gap-1.5 bg-slate-900 hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 text-white font-semibold text-xs px-3.5 py-2 rounded-lg border border-slate-700 transition-colors"
+            >
+              <span>Sign In</span>
+            </Link>
+          )}
         </div>
       </div>
     </header>

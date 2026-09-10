@@ -5,10 +5,12 @@ import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { getSeverityConfig, type Severity } from "@/app/components/SeverityBadge";
+import { useToast } from "@/app/components/Toast";
 
 export default function NewReport() {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { toast } = useToast();
 
   const [location, setLocation] = useState("");
   const [description, setDescription] = useState("");
@@ -18,12 +20,19 @@ export default function NewReport() {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [showReview, setShowReview] = useState(false);
 
   const handleImageChange = (file: File | null) => {
     if (file) {
+      // Validate file size (10MB max)
+      if (file.size > 10 * 1024 * 1024) {
+        setError("Image size exceeds 10MB limit. Please choose a smaller photo.");
+        return;
+      }
       setImage(file);
       const url = URL.createObjectURL(file);
       setPreviewUrl(url);
+      setError("");
     } else {
       setImage(null);
       if (previewUrl) {
@@ -47,7 +56,13 @@ export default function NewReport() {
     setError("");
 
     if (!image) {
-      setError("Please upload a photo of the flooding.");
+      setError("Please attach a photograph of the flooding as visual evidence.");
+      setLoading(false);
+      return;
+    }
+
+    if (!location.trim()) {
+      setError("Please specify the exact location or barangay.");
       setLoading(false);
       return;
     }
@@ -61,12 +76,12 @@ export default function NewReport() {
       } = await supabase.auth.getUser();
 
       if (!user) {
-        setError("You must be logged in to post a report.");
+        setError("You must be logged in to broadcast a report.");
         setLoading(false);
         return;
       }
 
-      // Create a unique filename
+      // Create unique filename
       const fileExtension = image.name.split(".").pop() || "jpg";
       const fileName = `${user.id}/${crypto.randomUUID()}.${fileExtension}`;
 
@@ -86,7 +101,7 @@ export default function NewReport() {
         data: { publicUrl },
       } = supabase.storage.from("post-images").getPublicUrl(fileName);
 
-      // Create post
+      // Create post in Supabase
       const { error: postError } = await supabase.from("posts").insert({
         user_id: user.id,
         location: location.trim(),
@@ -102,7 +117,13 @@ export default function NewReport() {
         return;
       }
 
-      // Go back home
+      toast({
+        type: "success",
+        title: "Report Broadcasted",
+        message: "Your flood hazard alert is now live for the community.",
+      });
+
+      // Redirect home
       router.push("/");
       router.refresh();
     } catch (err: any) {
@@ -111,14 +132,21 @@ export default function NewReport() {
     }
   };
 
+  const severityOptions: { value: Severity; label: string; desc: string }[] = [
+    { value: "minor", label: "Minor", desc: "Ankle-deep • Passable to all vehicles" },
+    { value: "moderate", label: "Moderate", desc: "Knee-deep • Caution for sedans & motorcycles" },
+    { value: "severe", label: "Severe", desc: "Waist-deep • Impassable to light vehicles" },
+    { value: "critical", label: "Critical", desc: "Chest-deep or higher • High danger / Evacuation" },
+  ];
+
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#0b1120] py-10 px-4 sm:px-6 flex flex-col justify-center transition-colors duration-200">
-      <div className="max-w-xl mx-auto w-full">
-        {/* Back Link */}
-        <div className="mb-6">
+    <div className="min-h-screen bg-slate-50 dark:bg-[#090e17] py-8 sm:py-12 px-4 sm:px-6 flex flex-col justify-center transition-colors duration-150">
+      <div className="max-w-2xl mx-auto w-full">
+        {/* Navigation Breadcrumb */}
+        <div className="mb-5 flex items-center justify-between">
           <Link
             href="/"
-            className="inline-flex items-center gap-2 text-xs font-bold text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors"
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -134,34 +162,41 @@ export default function NewReport() {
                 d="M10 19l-7-7m0 0l7-7m-7 7h18"
               />
             </svg>
-            <span>Back to Feed</span>
+            <span>Cancel & Return to Feed</span>
           </Link>
+
+          <span className="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
+            Incident Form
+          </span>
         </div>
 
-        {/* Card */}
-        <div className="bg-white dark:bg-slate-900/90 rounded-3xl border border-slate-200/90 dark:border-slate-800 shadow-2xl shadow-slate-200/50 dark:shadow-black/50 p-6 sm:p-10 transition-colors duration-200">
-          <div className="flex items-center gap-3.5 pb-6 border-b border-slate-100 dark:border-slate-800">
-            <div className="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center text-2xl shadow-inner">
-              🌊
-            </div>
-            <div>
-              <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-                Create Flood Report
-              </h1>
-              <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5 font-medium">
-                Share accurate conditions to keep your community safe.
-              </p>
+        {/* Main Form Card */}
+        <div className="bg-white dark:bg-[#0f172a] rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-6 sm:p-8">
+          {/* Header */}
+          <div className="pb-5 border-b border-slate-100 dark:border-slate-800">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-lg bg-blue-700 text-white flex items-center justify-center font-bold text-lg">
+                📢
+              </div>
+              <div>
+                <h1 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white tracking-tight">
+                  Submit Flood Hazard Report
+                </h1>
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                  Broadcast verified street conditions to alert motorists and local responders.
+                </p>
+              </div>
             </div>
           </div>
 
           <form onSubmit={handleSubmit} className="mt-6 space-y-6">
-            {/* Location */}
-            <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
-                Location / Barangay / City <span className="text-rose-500">*</span>
+            {/* Section 1: Location */}
+            <div className="space-y-1.5">
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                1. Incident Location / Barangay <span className="text-rose-500">*</span>
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 dark:text-slate-500">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="w-4 h-4"
@@ -186,89 +221,89 @@ export default function NewReport() {
                   type="text"
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
-                  placeholder="e.g. Brgy. San Jose, Malolos, Bulacan"
+                  placeholder="e.g., McArthur Highway, Brgy. San Agustin, Malolos, Bulacan"
                   required
-                  className="w-full rounded-2xl border border-slate-300 dark:border-slate-700 pl-10 pr-4 py-3 text-sm text-slate-900 dark:text-white bg-white dark:bg-slate-800 placeholder-slate-400 dark:placeholder-slate-500 outline-none transition focus:border-blue-600 dark:focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 shadow-2xs"
+                  className="w-full rounded-xl border border-slate-300 dark:border-slate-700 pl-10 pr-4 py-2.5 text-sm text-slate-900 dark:text-white bg-white dark:bg-slate-800 placeholder-slate-400 dark:placeholder-slate-500 outline-none transition focus:border-blue-600 dark:focus:border-blue-500"
                 />
               </div>
+              <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                Specify street name, landmark, barangay, and municipality for quick location mapping.
+              </p>
             </div>
 
-            {/* Description */}
-            <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
-                What's happening? <span className="text-rose-500">*</span>
-              </label>
-              <textarea
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                placeholder="Describe current water level (ankle, knee, waist deep), impassable roads, or assistance needed..."
-                rows={4}
-                required
-                className="w-full rounded-2xl border border-slate-300 dark:border-slate-700 px-4 py-3 text-sm text-slate-900 dark:text-white bg-white dark:bg-slate-800 placeholder-slate-400 dark:placeholder-slate-500 outline-none transition focus:border-blue-600 dark:focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 resize-none shadow-2xs leading-relaxed"
-              />
-            </div>
-
-            {/* Flood Severity */}
-            <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-3">
-                Flood Severity <span className="text-rose-500">*</span>
+            {/* Section 2: Severity Level Selector */}
+            <div className="space-y-2">
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                2. Water Level & Severity Assessment <span className="text-rose-500">*</span>
               </label>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                {([
-                  { value: "minor", label: "Minor" },
-                  { value: "moderate", label: "Moderate" },
-                  { value: "severe", label: "Severe" },
-                  { value: "critical", label: "Critical / Impassable" },
-                ] as { value: Severity; label: string }[]).map(({ value, label }) => {
+                {severityOptions.map(({ value, label, desc }) => {
                   const config = getSeverityConfig(value);
                   const isSelected = severity === value;
                   return (
                     <label
                       key={value}
-                      className={`flex items-center gap-3 px-4 py-3 rounded-2xl border-2 cursor-pointer transition-all duration-100 select-none ${
+                      className={`flex flex-col p-3 rounded-xl border cursor-pointer transition-colors select-none ${
                         isSelected
-                          ? `${config.bg} ${config.border} ${config.text} shadow-xs`
-                          : "bg-white dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:border-slate-300 dark:hover:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-750"
+                          ? `${config.bg} ${config.border} border-2 shadow-xs`
+                          : "bg-white dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600"
                       }`}
                     >
-                      <input
-                        type="radio"
-                        name="severity"
-                        value={value}
-                        checked={isSelected}
-                        onChange={() => setSeverity(value)}
-                        className="sr-only"
-                      />
-                      <span className="text-base leading-none">{config.emoji}</span>
-                      <span className="text-sm font-bold">{label}</span>
-                      {isSelected && (
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="w-4 h-4 ml-auto shrink-0"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                          strokeWidth={2.5}
-                        >
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                        </svg>
-                      )}
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="radio"
+                            name="severity"
+                            value={value}
+                            checked={isSelected}
+                            onChange={() => setSeverity(value)}
+                            className="sr-only"
+                          />
+                          <span className="text-sm">{config.emoji}</span>
+                          <span className="text-xs font-bold text-slate-900 dark:text-white">
+                            {label}
+                          </span>
+                        </div>
+                        {isSelected && (
+                          <span className="text-blue-700 dark:text-blue-400 text-xs font-bold">
+                            ✓
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 pl-6 leading-snug">
+                        {desc}
+                      </p>
                     </label>
                   );
                 })}
               </div>
             </div>
 
-            {/* Image Upload with Live Preview */}
-            <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
-                Flood Photo <span className="text-rose-500">*</span>
+            {/* Section 3: Situation Observations */}
+            <div className="space-y-1.5">
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                3. Situation & Road Conditions <span className="text-rose-500">*</span>
+              </label>
+              <textarea
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="Describe current water depth, road passability, current weather conditions, or any stranded vehicles/motorists..."
+                rows={3}
+                required
+                className="w-full rounded-xl border border-slate-300 dark:border-slate-700 p-3 text-sm text-slate-900 dark:text-white bg-white dark:bg-slate-800 placeholder-slate-400 dark:placeholder-slate-500 outline-none transition focus:border-blue-600 dark:focus:border-blue-500 resize-none leading-relaxed"
+              />
+            </div>
+
+            {/* Section 4: Visual Evidence Upload */}
+            <div className="space-y-2">
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                4. Photo Evidence <span className="text-rose-500">*</span>
               </label>
 
               {!previewUrl ? (
                 <div
                   onClick={() => fileInputRef.current?.click()}
-                  className="border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-blue-500 dark:hover:border-blue-400 bg-slate-50/60 dark:bg-slate-800/40 hover:bg-blue-50/30 dark:hover:bg-blue-950/20 rounded-2xl p-6 text-center cursor-pointer transition-all duration-150 group"
+                  className="border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-blue-600 dark:hover:border-blue-500 bg-slate-50 dark:bg-slate-850/60 rounded-xl p-6 text-center cursor-pointer transition-colors"
                 >
                   <input
                     ref={fileInputRef}
@@ -278,10 +313,10 @@ export default function NewReport() {
                     required
                     className="hidden"
                   />
-                  <div className="w-12 h-12 rounded-2xl bg-white dark:bg-slate-800 shadow-xs border border-slate-200 dark:border-slate-700 text-blue-600 dark:text-blue-400 flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
+                  <div className="w-10 h-10 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-blue-700 dark:text-blue-400 flex items-center justify-center mx-auto mb-2">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      className="w-6 h-6"
+                      className="w-5 h-5"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -294,72 +329,99 @@ export default function NewReport() {
                       />
                     </svg>
                   </div>
-                  <p className="text-sm font-bold text-slate-800 dark:text-slate-200">
-                    Click to upload photo
+                  <p className="text-xs font-bold text-slate-800 dark:text-slate-200">
+                    Click to select or capture photo
                   </p>
-                  <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">
-                    PNG, JPG, WEBP up to 10MB
+                  <p className="text-[11px] text-slate-400 mt-0.5">
+                    JPG, PNG, or WEBP (Max 10MB)
                   </p>
                 </div>
               ) : (
-                <div className="relative rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 shadow-sm bg-slate-900 group">
-                  <img
-                    src={previewUrl}
-                    alt="Flood preview"
-                    className="w-full max-h-72 object-cover opacity-95 group-hover:opacity-100 transition-opacity"
-                  />
-                  <div className="absolute top-3 right-3 flex items-center gap-2">
+                <div className="rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 bg-slate-900 space-y-2">
+                  <div className="relative aspect-[16/9] w-full bg-slate-950">
+                    <img
+                      src={previewUrl}
+                      alt="Flood preview"
+                      className="w-full h-full object-cover"
+                    />
                     <button
                       type="button"
                       onClick={handleRemoveImage}
-                      className="px-3 py-1.5 rounded-xl bg-red-600/90 hover:bg-red-600 text-white text-xs font-semibold backdrop-blur-sm shadow-md transition-colors cursor-pointer flex items-center gap-1.5"
+                      className="absolute top-2 right-2 px-2.5 py-1 rounded-md bg-rose-600 text-white text-xs font-semibold shadow-xs hover:bg-rose-700 transition-colors cursor-pointer"
                     >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="w-3.5 h-3.5"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth={2}
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                        />
-                      </svg>
                       Change Photo
                     </button>
                   </div>
+                  {image && (
+                    <div className="p-2.5 text-[11px] text-slate-300 flex items-center justify-between">
+                      <span className="truncate max-w-xs">{image.name}</span>
+                      <span>{(image.size / (1024 * 1024)).toFixed(2)} MB</span>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
 
-            {/* Error Message */}
+            {/* Review Preview Toggle */}
+            {location && description && previewUrl && (
+              <div className="pt-2">
+                <button
+                  type="button"
+                  onClick={() => setShowReview(!showReview)}
+                  className="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-700 dark:text-blue-400 hover:underline cursor-pointer"
+                >
+                  <span>{showReview ? "▲ Hide Broadcast Preview" : "▼ Review Report Before Submitting"}</span>
+                </button>
+
+                {showReview && (
+                  <div className="mt-3 p-4 rounded-xl border border-blue-200 dark:border-blue-900 bg-blue-50/40 dark:bg-blue-950/20 space-y-3">
+                    <p className="text-[11px] font-bold text-blue-900 dark:text-blue-300 uppercase tracking-wider">
+                      Public Feed Preview
+                    </p>
+                    <div className="bg-white dark:bg-[#0f172a] rounded-xl border border-slate-200 dark:border-slate-800 p-4 space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="font-bold text-xs text-slate-900 dark:text-white">
+                          📍 {location}
+                        </span>
+                        <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
+                          Just now
+                        </span>
+                      </div>
+                      <p className="text-xs text-slate-700 dark:text-slate-300 whitespace-pre-wrap">
+                        {description}
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Error Banner */}
             {error && (
-              <div className="bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-800/60 text-rose-700 dark:text-rose-300 rounded-2xl p-4 text-xs font-semibold flex items-center gap-2.5">
+              <div className="bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-800 text-rose-700 dark:text-rose-300 rounded-xl p-3 text-xs font-semibold flex items-center gap-2">
                 <span>⚠️</span>
                 <span>{error}</span>
               </div>
             )}
 
-            {/* Submit Button */}
+            {/* Actions */}
             <div className="pt-2 flex items-center gap-3">
               <Link
                 href="/"
-                className="flex-1 py-3 text-center text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 hover:text-slate-800 dark:hover:text-white bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-2xl transition-colors"
+                className="flex-1 py-2.5 text-center text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 transition-colors"
               >
                 Cancel
               </Link>
+
               <button
                 type="submit"
                 disabled={loading}
-                className="flex-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-500 text-white font-bold py-3.5 px-6 rounded-2xl shadow-md shadow-blue-600/25 hover:shadow-lg transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer text-sm"
+                className="flex-2 bg-blue-700 hover:bg-blue-800 dark:bg-blue-600 dark:hover:bg-blue-500 text-white font-semibold py-2.5 px-5 rounded-xl transition-colors disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer text-xs"
               >
                 {loading ? (
                   <>
                     <svg
-                      className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                      className="animate-spin h-3.5 w-3.5 text-white"
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
                       viewBox="0 0 24 24"
@@ -378,26 +440,10 @@ export default function NewReport() {
                         d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                       ></path>
                     </svg>
-                    Uploading Report...
+                    <span>Broadcasting Report...</span>
                   </>
                 ) : (
-                  <>
-                    <span>Post Flood Report</span>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="w-4 h-4"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth={2}
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M14 5l7 7m0 0l-7 7m7-7H3"
-                      />
-                    </svg>
-                  </>
+                  <span>Broadcast Flood Report →</span>
                 )}
               </button>
             </div>
