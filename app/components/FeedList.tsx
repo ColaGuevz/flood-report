@@ -19,6 +19,7 @@ export interface FeedPost {
   image_url: string;
   severity: Severity | string | null;
   status?: ReportStatus | string | null;
+  moderation_status?: string | null;
   created_at: string;
   profiles?: {
     username: string;

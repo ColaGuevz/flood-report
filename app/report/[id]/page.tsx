@@ -5,6 +5,7 @@ import type { Metadata, ResolvingMetadata } from "next";
 import Navbar from "@/app/components/Navbar";
 import SeverityBadge, { Severity } from "@/app/components/SeverityBadge";
 import StatusBadge, { ReportStatus } from "@/app/components/StatusBadge";
+import ModerationStatusBadge from "@/app/components/ModerationStatusBadge";
 import RecentBadge from "@/app/components/RecentBadge";
 import ConfirmButton from "@/app/components/ConfirmButton";
 import ToggleStatusButton from "@/app/components/ToggleStatusButton";
@@ -102,18 +103,19 @@ export default async function ReportDetailPage({ params }: PageProps) {
     username: string;
     display_name: string;
     avatar_url: string | null;
+    role?: string;
   } | null = null;
 
   if (user) {
     const { data: profile } = await supabase
       .from("profiles")
-      .select("username, display_name, avatar_url")
+      .select("username, display_name, avatar_url, role")
       .eq("id", user.id)
       .maybeSingle();
     currentProfile = profile;
   }
 
-  // 3. Fetch public flood report (only safe public fields)
+  // 3. Fetch flood report details
   const { data: post, error } = await supabase
     .from("posts")
     .select(
@@ -125,11 +127,16 @@ export default async function ReportDetailPage({ params }: PageProps) {
       image_url,
       severity,
       status,
+      moderation_status,
+      moderation_reason,
+      moderated_at,
+      moderated_by,
       created_at,
       profiles (
         username,
         display_name,
-        avatar_url
+        avatar_url,
+        role
       ),
       report_confirmations (
         user_id
@@ -144,12 +151,20 @@ export default async function ReportDetailPage({ params }: PageProps) {
     notFound();
   }
 
+  const isOwner = user ? user.id === post.user_id : false;
+  const isStaff = currentProfile?.role === "moderator" || currentProfile?.role === "admin";
+  const modStatus = post.moderation_status || "visible";
+
+  // If report is hidden or removed, only author and staff can view it
+  if (modStatus !== "visible" && !isOwner && !isStaff) {
+    notFound();
+  }
+
   const rawProfiles = post.profiles as unknown;
   const authorProfile = Array.isArray(rawProfiles)
     ? (rawProfiles[0] as { username: string; display_name: string; avatar_url: string | null } | undefined)
     : (rawProfiles as { username: string; display_name: string; avatar_url: string | null } | null);
 
-  const isOwner = user ? user.id === post.user_id : false;
   const postDate = new Date(post.created_at);
   const relativeTime = formatRelativeTime(post.created_at);
   const isPostRecent = isRecent(post.created_at);
@@ -194,6 +209,35 @@ export default async function ReportDetailPage({ params }: PageProps) {
           </div>
         </div>
 
+        {/* Moderation Notice Banner if Hidden or Removed */}
+        {modStatus !== "visible" && (
+          <div
+            className={`p-4 rounded-2xl border text-xs flex items-start gap-3 shadow-xs ${
+              modStatus === "removed"
+                ? "bg-rose-50 dark:bg-rose-950/40 border-rose-200 dark:border-rose-800 text-rose-800 dark:text-rose-200"
+                : "bg-amber-50 dark:bg-amber-950/40 border-amber-200 dark:border-amber-800 text-amber-800 dark:text-amber-200"
+            }`}
+          >
+            <span className="text-xl shrink-0">🛡️</span>
+            <div className="space-y-1">
+              <div className="flex items-center gap-2 flex-wrap">
+                <h3 className="font-bold text-sm">
+                  {modStatus === "removed"
+                    ? "Report Removed by Moderation"
+                    : "Report Temporarily Hidden by Moderation"}
+                </h3>
+                <ModerationStatusBadge status={modStatus} />
+              </div>
+              <p className="leading-relaxed">
+                <strong>Reason:</strong> {post.moderation_reason || "Flagged for administrative review."}
+              </p>
+              <p className="text-[11px] opacity-80 pt-0.5">
+                This submission is restricted from the public feed. Only the report author, moderators, and administrators can view this page.
+              </p>
+            </div>
+          </div>
+        )}
+
         {/* 2-Column Desktop Grid Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* Main Details Column (8 cols) */}
@@ -230,6 +274,7 @@ export default async function ReportDetailPage({ params }: PageProps) {
                   <div className="flex items-center gap-2 flex-wrap pt-1">
                     <SeverityBadge severity={post.severity} showDescription />
                     <StatusBadge status={post.status} />
+                    {modStatus !== "visible" && <ModerationStatusBadge status={modStatus} />}
                     {isPostRecent && <RecentBadge />}
                   </div>
                 </div>

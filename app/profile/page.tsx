@@ -5,6 +5,7 @@ import Navbar from "@/app/components/Navbar";
 import DeletePostButton from "@/app/components/DeletePostButton";
 import SeverityBadge from "@/app/components/SeverityBadge";
 import StatusBadge from "@/app/components/StatusBadge";
+import ModerationStatusBadge from "@/app/components/ModerationStatusBadge";
 import ToggleStatusButton from "@/app/components/ToggleStatusButton";
 import RecentBadge from "@/app/components/RecentBadge";
 import EditProfileModal from "@/app/components/EditProfileModal";
@@ -127,13 +128,41 @@ export default async function ProfilePage() {
 
             {/* Profile Identity Details */}
             <div className="space-y-3">
-              <div>
-                <h1 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
-                  {profile.display_name}
-                </h1>
-                <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium">
-                  @{profile.username}
-                </p>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <h1 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
+                      {profile.display_name}
+                    </h1>
+                    {profile.role === "admin" && (
+                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[11px] font-bold bg-purple-50 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800">
+                        👑 Administrator
+                      </span>
+                    )}
+                    {profile.role === "moderator" && (
+                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[11px] font-bold bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
+                        🛡️ Moderator
+                      </span>
+                    )}
+                    {(!profile.role || profile.role === "user") && (
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
+                        👤 Citizen Reporter
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium mt-0.5">
+                    @{profile.username}
+                  </p>
+                </div>
+
+                {(profile.role === "moderator" || profile.role === "admin") && (
+                  <Link
+                    href="/moderation"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-950/50 hover:bg-blue-100 dark:hover:bg-blue-900/60 border border-blue-200 dark:border-blue-800 rounded-lg transition-colors shrink-0"
+                  >
+                    <span>🛡️ Open Moderation Dashboard →</span>
+                  </Link>
+                )}
               </div>
 
               {/* Metric Stats Row */}
@@ -293,8 +322,26 @@ export default async function ProfilePage() {
                   <div className="mt-3 flex items-center gap-2 flex-wrap">
                     <SeverityBadge severity={post.severity} />
                     <StatusBadge status={post.status} />
+                    {post.moderation_status && post.moderation_status !== "visible" && (
+                      <ModerationStatusBadge status={post.moderation_status} />
+                    )}
                     {isRecent(post.created_at) && <RecentBadge />}
                   </div>
+
+                  {/* Moderation notice for author */}
+                  {post.moderation_status && post.moderation_status !== "visible" && (
+                    <div className="mt-2.5 p-2.5 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 text-xs text-amber-900 dark:text-amber-300 space-y-0.5">
+                      <p className="font-semibold flex items-center gap-1.5">
+                        <span>🛡️ Moderation Status:</span>
+                        <span className="capitalize">{post.moderation_status}</span>
+                      </p>
+                      {post.moderation_reason && (
+                        <p className="text-[11px] opacity-90">
+                          <strong>Note:</strong> {post.moderation_reason}
+                        </p>
+                      )}
+                    </div>
+                  )}
 
                   {/* Description */}
                   <p className="mt-2.5 text-slate-800 dark:text-slate-200 text-xs sm:text-sm leading-relaxed whitespace-pre-wrap">

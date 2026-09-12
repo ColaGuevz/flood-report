@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useRef } from "react";
-import { createClient } from "@/lib/supabase/client";
+import { useState, useRef, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { getSeverityConfig, type Severity } from "@/app/components/SeverityBadge";
 import { useToast } from "@/app/components/Toast";
+import { createReport } from "@/app/actions/createReport";
 
 export default function NewReport() {
   const router = useRouter();
@@ -20,10 +20,24 @@ export default function NewReport() {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [rateLimitInfo, setRateLimitInfo] = useState<{
+    retryAfterSeconds?: number;
+    isDuplicate?: boolean;
+    existingReportId?: string;
+  } | null>(null);
   const [showReview, setShowReview] = useState(false);
+
+  // Generate a stable idempotency key per form mount to prevent double-submit
+  const idempotencyKey = useMemo(() => crypto.randomUUID(), []);
 
   const handleImageChange = (file: File | null) => {
     if (file) {
+      // Client-side validation (server also validates)
+      const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+      if (!allowedTypes.includes(file.type)) {
+        setError("Please upload a JPG, PNG, WEBP, or GIF image file.");
+        return;
+      }
       // Validate file size (10MB max)
       if (file.size > 10 * 1024 * 1024) {
         setError("Image size exceeds 10MB limit. Please choose a smaller photo.");
@@ -33,6 +47,7 @@ export default function NewReport() {
       const url = URL.createObjectURL(file);
       setPreviewUrl(url);
       setError("");
+      setRateLimitInfo(null);
     } else {
       setImage(null);
       if (previewUrl) {
@@ -52,8 +67,12 @@ export default function NewReport() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Prevent double-click: if already loading, do nothing
+    if (loading) return;
+
     setLoading(true);
     setError("");
+    setRateLimitInfo(null);
 
     if (!image) {
       setError("Please attach a photograph of the flooding as visual evidence.");
@@ -68,51 +87,23 @@ export default function NewReport() {
     }
 
     try {
-      const supabase = createClient();
+      // Build FormData for the server action
+      const formData = new FormData();
+      formData.append("location", location.trim());
+      formData.append("description", description.trim());
+      formData.append("severity", severity);
+      formData.append("idempotencyKey", idempotencyKey);
+      formData.append("image", image);
 
-      // Get the logged-in user
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
+      const result = await createReport(formData);
 
-      if (!user) {
-        setError("You must be logged in to broadcast a report.");
-        setLoading(false);
-        return;
-      }
-
-      // Create unique filename
-      const fileExtension = image.name.split(".").pop() || "jpg";
-      const fileName = `${user.id}/${crypto.randomUUID()}.${fileExtension}`;
-
-      // Upload image
-      const { error: uploadError } = await supabase.storage
-        .from("post-images")
-        .upload(fileName, image);
-
-      if (uploadError) {
-        setError(`Upload failed: ${uploadError.message}`);
-        setLoading(false);
-        return;
-      }
-
-      // Get public image URL
-      const {
-        data: { publicUrl },
-      } = supabase.storage.from("post-images").getPublicUrl(fileName);
-
-      // Create post in Supabase
-      const { error: postError } = await supabase.from("posts").insert({
-        user_id: user.id,
-        location: location.trim(),
-        description: description.trim(),
-        severity,
-        status: "active",
-        image_url: publicUrl,
-      });
-
-      if (postError) {
-        setError(postError.message);
+      if (!result.success) {
+        setError(result.error || "Failed to submit report.");
+        setRateLimitInfo({
+          retryAfterSeconds: result.retryAfterSeconds,
+          isDuplicate: result.isDuplicate,
+          existingReportId: result.existingReportId,
+        });
         setLoading(false);
         return;
       }
@@ -120,7 +111,7 @@ export default function NewReport() {
       toast({
         type: "success",
         title: "Report Broadcasted",
-        message: "Your flood hazard alert is now live for the community.",
+        message: result.message || "Your flood hazard alert is now live for the community.",
       });
 
       // Redirect home
@@ -308,7 +299,7 @@ export default function NewReport() {
                   <input
                     ref={fileInputRef}
                     type="file"
-                    accept="image/*"
+                    accept="image/jpeg,image/png,image/webp,image/gif"
                     onChange={(e) => handleImageChange(e.target.files?.[0] || null)}
                     required
                     className="hidden"
@@ -333,7 +324,7 @@ export default function NewReport() {
                     Click to select or capture photo
                   </p>
                   <p className="text-[11px] text-slate-400 mt-0.5">
-                    JPG, PNG, or WEBP (Max 10MB)
+                    JPG, PNG, WEBP, or GIF (Max 10MB)
                   </p>
                 </div>
               ) : (
@@ -398,9 +389,38 @@ export default function NewReport() {
 
             {/* Error Banner */}
             {error && (
-              <div className="bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-800 text-rose-700 dark:text-rose-300 rounded-xl p-3 text-xs font-semibold flex items-center gap-2">
-                <span>⚠️</span>
-                <span>{error}</span>
+              <div className="bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-800 text-rose-700 dark:text-rose-300 rounded-xl p-3 text-xs font-semibold space-y-2">
+                <div className="flex items-center gap-2">
+                  <span>⚠️</span>
+                  <span>{error}</span>
+                </div>
+
+                {/* Rate limit: show retry info */}
+                {rateLimitInfo?.retryAfterSeconds && rateLimitInfo.retryAfterSeconds > 0 && (
+                  <div className="flex items-center gap-1.5 text-[11px] text-rose-600 dark:text-rose-400 pl-6">
+                    <span>⏱️</span>
+                    <span>
+                      You can submit again in{" "}
+                      {rateLimitInfo.retryAfterSeconds >= 60
+                        ? `${Math.ceil(rateLimitInfo.retryAfterSeconds / 60)} minute(s)`
+                        : `${rateLimitInfo.retryAfterSeconds} second(s)`}
+                      .
+                    </span>
+                  </div>
+                )}
+
+                {/* Duplicate: show link to existing report */}
+                {rateLimitInfo?.isDuplicate && rateLimitInfo?.existingReportId && (
+                  <div className="pl-6">
+                    <a
+                      href={`/report/${rateLimitInfo.existingReportId}`}
+                      className="inline-flex items-center gap-1 text-[11px] font-semibold text-blue-700 dark:text-blue-400 hover:underline"
+                    >
+                      <span>📄</span>
+                      <span>View your existing report →</span>
+                    </a>
+                  </div>
+                )}
               </div>
             )}
 

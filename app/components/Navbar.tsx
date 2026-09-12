@@ -6,10 +6,13 @@ interface NavbarProps {
     display_name: string;
     avatar_url: string | null;
     username: string;
+    role?: string;
   } | null;
 }
 
 export default function Navbar({ profile }: NavbarProps) {
+  const isStaff = profile?.role === "moderator" || profile?.role === "admin";
+
   return (
     <header className="sticky top-0 z-30 bg-white/90 dark:bg-[#0f172a]/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 transition-colors duration-150">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
@@ -67,6 +70,18 @@ export default function Navbar({ profile }: NavbarProps) {
                 My Submissions
               </Link>
             )}
+            {isStaff && (
+              <Link
+                href="/moderation"
+                className="px-3 py-1.5 rounded-lg text-blue-700 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950/60 transition-colors flex items-center gap-1.5 font-bold"
+              >
+                <span>🛡️</span>
+                <span>Moderation</span>
+                <span className="px-1.5 py-0.2 rounded text-[9px] uppercase bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200">
+                  {profile.role}
+                </span>
+              </Link>
+            )}
           </nav>
         </div>
 
@@ -119,9 +134,16 @@ export default function Navbar({ profile }: NavbarProps) {
                   )}
                 </div>
                 <div className="hidden lg:block text-left">
-                  <p className="text-xs font-semibold text-slate-900 dark:text-slate-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 leading-tight transition-colors">
-                    {profile.display_name}
-                  </p>
+                  <div className="flex items-center gap-1.5">
+                    <p className="text-xs font-semibold text-slate-900 dark:text-slate-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 leading-tight transition-colors">
+                      {profile.display_name}
+                    </p>
+                    {isStaff && (
+                      <span className="text-[9px] font-bold px-1 rounded uppercase bg-blue-100 dark:bg-blue-950 text-blue-800 dark:text-blue-300">
+                        {profile.role}
+                      </span>
+                    )}
+                  </div>
                   <p className="text-[11px] text-slate-500 dark:text-slate-400">
                     @{profile.username}
                   </p>

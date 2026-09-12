@@ -15,6 +15,29 @@ export async function toggleConfirmation(reportId: string) {
     return { success: false, error: "You must be logged in to confirm a report." };
   }
 
+  // ── Rate limit check: max 30 toggles per hour ──────────────
+  const { data: rateLimitResult, error: rateLimitError } = await supabase.rpc(
+    "check_confirmation_rate_limit",
+    { user_uuid: user.id }
+  );
+
+  if (rateLimitError) {
+    // Gracefully skip if function doesn't exist yet (migration not applied)
+    if (
+      !(
+        rateLimitError.message?.includes("function") &&
+        rateLimitError.message?.includes("does not exist")
+      )
+    ) {
+      console.error("Confirmation rate limit check error:", rateLimitError);
+      return { success: false, error: "Unable to verify confirmation eligibility. Please try again." };
+    }
+  }
+
+  if (rateLimitResult && !rateLimitResult.allowed) {
+    return { success: false, error: rateLimitResult.reason };
+  }
+
   // Check if a confirmation already exists
   const { data: existingConfirmation, error: fetchError } = await supabase
     .from("report_confirmations")
@@ -50,6 +73,10 @@ export async function toggleConfirmation(reportId: string) {
       });
 
     if (insertError) {
+      // Handle unique constraint violation (duplicate insert race condition)
+      if (insertError.code === "23505") {
+        return { success: true }; // Already confirmed, treat as success
+      }
       console.error("Error inserting confirmation:", insertError);
       return { success: false, error: "Failed to add confirmation." };
     }

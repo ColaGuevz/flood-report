@@ -29,7 +29,7 @@ export default async function Home() {
     redirect("/profile/setup");
   }
 
-  // Get flood reports
+  // Get publicly visible flood reports (supports 'visible' or null fallback)
   const { data: posts, error } = await supabase
     .from("posts")
     .select(
@@ -45,6 +45,7 @@ export default async function Home() {
       )
     `
     )
+    .or("moderation_status.eq.visible,moderation_status.is.null")
     .order("created_at", { ascending: false });
 
   // Calculate quick stats
